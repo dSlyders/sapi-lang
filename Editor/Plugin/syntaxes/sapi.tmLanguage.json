@@ -1,0 +1,229 @@
+{
+  "name": "Sapi",
+  "scopeName": "source.sapi",
+  "fileTypes": ["sapi"],
+  "patterns": [
+    { "include": "#doc-comment" },
+    { "include": "#line-comment" },
+    { "include": "#sql-string" },
+    { "include": "#string" },
+    { "include": "#return-status" },
+    { "include": "#route-line" },
+    { "include": "#fn-decl" },
+    { "include": "#await-sql-decl" },
+    { "include": "#decl-with-name" },
+    { "include": "#var-decl" },
+    { "include": "#config-key" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#boolean" },
+    { "include": "#numbers" },
+    { "include": "#method-call" },
+    { "include": "#function-call" },
+    { "include": "#brackets" }
+  ],
+  "repository": {
+    "doc-comment": {
+      "name": "comment.line.documentation.sapi",
+      "match": "///.*$"
+    },
+    "line-comment": {
+      "name": "comment.line.double-slash.sapi",
+      "match": "//.*$"
+    },
+    "sql-string": {
+      "name": "string.quoted.backtick.sql.sapi",
+      "begin": "(`)",
+      "end": "(`)",
+      "beginCaptures": { "1": { "name": "punctuation.definition.string.backtick.sapi" } },
+      "endCaptures":   { "1": { "name": "punctuation.definition.string.backtick.sapi" } },
+      "patterns": [
+        { "include": "#sql-parens" },
+        { "include": "#sql-single-quote" },
+        {
+          "match": "(\\{)([^}]+)(\\})",
+          "captures": {
+            "1": { "name": "punctuation.definition.interpolation.begin.sapi" },
+            "2": { "name": "variable.template-expression.sapi" },
+            "3": { "name": "punctuation.definition.interpolation.end.sapi" }
+          }
+        },
+        {
+          "name": "keyword.other.sql.sapi",
+          "match": "(?i)\\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|ORDER|BY|ASC|DESC|LIMIT|OFFSET|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AS|AND|OR|NOT|NULL|GROUP|HAVING|DISTINCT|COUNT|SUM|AVG|MIN|MAX|CREATE|TABLE|IF|DROP|ALTER|INDEX|LIKE|IN|BETWEEN|EXISTS|CASE|WHEN|THEN|END|PRIMARY|KEY|UNIQUE|REFERENCES|FOREIGN|CONSTRAINT|DEFAULT|RETURNING|AUTO_INCREMENT|VARCHAR|TIMESTAMP|CURRENT_TIMESTAMP|INT|BOOLEAN|TEXT)\\b"
+        }
+      ]
+    },
+    "sql-parens": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": { "0": { "name": "punctuation.section.parens.sql.sapi" } },
+      "endCaptures":   { "0": { "name": "punctuation.section.parens.sql.sapi" } },
+      "patterns": [
+        {
+          "name": "keyword.other.sql.sapi",
+          "match": "(?i)\\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|ORDER|BY|ASC|DESC|LIMIT|OFFSET|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AS|AND|OR|NOT|NULL|GROUP|HAVING|DISTINCT|COUNT|SUM|AVG|MIN|MAX|CREATE|TABLE|IF|DROP|ALTER|INDEX|LIKE|IN|BETWEEN|EXISTS|CASE|WHEN|THEN|END|PRIMARY|KEY|UNIQUE|REFERENCES|FOREIGN|CONSTRAINT|DEFAULT|RETURNING|AUTO_INCREMENT|VARCHAR|TIMESTAMP|CURRENT_TIMESTAMP|INT|BOOLEAN|TEXT)\\b"
+        },
+        { "include": "#sql-single-quote" },
+        {
+          "match": "(\\{)([^}]+)(\\})",
+          "captures": {
+            "1": { "name": "punctuation.definition.interpolation.begin.sapi" },
+            "2": { "name": "variable.template-expression.sapi" },
+            "3": { "name": "punctuation.definition.interpolation.end.sapi" }
+          }
+        },
+        {
+          "name": "variable.other.sql-ident.sapi",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "constant.numeric.sapi",
+          "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+        }
+      ]
+    },
+    "sql-single-quote": {
+      "name": "string.quoted.single.sql.sapi",
+      "match": "'[^']*'"
+    },
+    "string": {
+      "name": "string.quoted.double.sapi",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.sapi",
+          "match": "\\\\[ntr\"\\\\]"
+        },
+        {
+          "match": "(\\{)([^}\"]*)(\\})",
+          "captures": {
+            "1": { "name": "punctuation.definition.interpolation.begin.sapi" },
+            "2": { "name": "variable.template-expression.sapi" },
+            "3": { "name": "punctuation.definition.interpolation.end.sapi" }
+          }
+        }
+      ]
+    },
+    "return-status": {
+      "match": "\\b(return)\\b\\s+([0-9]{3})\\s*:",
+      "captures": {
+        "1": { "name": "keyword.control.sapi" },
+        "2": { "name": "constant.numeric.http-status.sapi" }
+      }
+    },
+    "route-line": {
+      "begin": "^([A-Z][a-zA-Z0-9]*)\\s+(get|post|put|patch|delete)\\s+(\")",
+      "end": "\"",
+      "beginCaptures": {
+        "1": { "name": "entity.name.sapi" },
+        "2": { "name": "keyword.declaration.sapi" },
+        "3": { "name": "punctuation.definition.string.begin.sapi" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.sapi" }
+      },
+      "contentName": "string.quoted.route.sapi",
+      "patterns": [
+        {
+          "match": "(\\{)([^}\"]*)(\\})",
+          "captures": {
+            "1": { "name": "punctuation.definition.route-param.begin.sapi" },
+            "2": { "name": "variable.parameter.route.sapi" },
+            "3": { "name": "punctuation.definition.route-param.end.sapi" }
+          }
+        }
+      ]
+    },
+    "fn-decl": {
+      "match": "\\b(async\\s+fn|fn)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.declaration.sapi" },
+        "2": { "name": "entity.name.sapi" }
+      }
+    },
+    "await-sql-decl": {
+      "comment": "await PascalType varname = ... (SQL struct result)",
+      "match": "\\b(await)\\s+([A-Z][a-zA-Z0-9]*)\\s+([a-z_][a-zA-Z0-9_]*)\\s*=",
+      "captures": {
+        "1": { "name": "keyword.control.sapi" },
+        "2": { "name": "storage.type.sapi" },
+        "3": { "name": "variable.other.sapi" }
+      }
+    },
+    "decl-with-name": {
+      "match": "\\b(service|database|auth|sql|guard|body)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.declaration.sapi" },
+        "2": { "name": "entity.name.sapi" }
+      }
+    },
+    "var-decl": {
+      "match": "\\b(string|int|float|bool|date|time|json|number|list:[a-zA-Z]+)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+      "captures": {
+        "1": { "name": "storage.type.sapi" },
+        "2": { "name": "variable.other.sapi" }
+      }
+    },
+    "config-key": {
+      "comment": "indented key: value inside database/service/auth blocks",
+      "match": "^\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*:(?=\\s)",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.sapi" }
+      }
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.sapi",
+          "match": "\\b(if|else|return|await|for)\\b"
+        },
+        {
+          "name": "keyword.declaration.sapi",
+          "match": "\\b(service|database|fn|async|lock|sql|use|route|new|guard|body|auth)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.sapi",
+          "match": "\\blist:[a-zA-Z]+"
+        },
+        {
+          "name": "storage.type.sapi",
+          "match": "\\b(string|int|float|bool|date|time|json|number)\\b"
+        }
+      ]
+    },
+    "boolean": {
+      "name": "constant.language.boolean.sapi",
+      "match": "\\b(true|false)\\b"
+    },
+    "numbers": {
+      "name": "constant.numeric.sapi",
+      "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+    },
+    "method-call": {
+      "patterns": [
+        {
+          "name": "support.function.execute.sapi",
+          "match": "\\.(one|many|run)\\(\\)"
+        },
+        {
+          "name": "entity.name.function.method.sapi",
+          "match": ":[a-zA-Z_][a-zA-Z0-9_]*"
+        }
+      ]
+    },
+    "function-call": {
+      "name": "entity.name.function.sapi",
+      "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*\\()"
+    },
+    "brackets": {
+      "name": "punctuation.bracket.sapi",
+      "match": "[{}]"
+    }
+  }
+}
