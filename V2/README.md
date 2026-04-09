@@ -278,6 +278,9 @@ sapi build main.sapi
 # Lancer directement
 sapi run main.sapi
 
+# Mode watch — recompile automatiquement à chaque sauvegarde (dev)
+sapi watch main.sapi
+
 # Générer la documentation HTML
 sapi doc main.sapi --html
 ```
