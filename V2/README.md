@@ -272,17 +272,23 @@ Ctrl+Shift+P  →  Developer: Reload Window
 ## Compiler et lancer
 
 ```bash
-# Compiler un fichier .sapi
+# Compiler un fichier .sapi (génère le projet Rust dans ./out/)
 sapi build main.sapi
 
-# Lancer directement
+# Compiler vers un dossier spécifique
+sapi build main.sapi --output mon-projet
+
+# Lancer directement (compile + exécute)
 sapi run main.sapi
 
 # Mode watch — recompile automatiquement à chaque sauvegarde (dev)
 sapi watch main.sapi
 
-# Générer la documentation HTML
+# Générer la documentation HTML (dans ./docs/)
 sapi doc main.sapi --html
+
+# Générer la documentation dans un dossier spécifique
+sapi doc main.sapi --html --output api-docs
 ```
 
 ---
