@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sapi — Référence du langage</title>
+  <style>
+    :root {
+      --bg:       #0f1117;
+      --bg2:      #161b22;
+      --bg3:      #1c2128;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --accent:   #58a6ff;
+      --green:    #3fb950;
+      --yellow:   #d29922;
+      --orange:   #f0883e;
+      --purple:   #bc8cff;
+      --red:      #f85149;
+      --teal:     #39d353;
+      --sidebar-w: 260px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.65; display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 24px 0;
+    }
+    nav .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    nav .logo h1 { font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+    nav .logo p  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    nav ul { list-style: none; padding: 0 8px; }
+    nav ul li a {
+      display: block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .15s, background .15s;
+    }
+    nav ul li a:hover { color: var(--text); background: var(--bg3); }
+    nav ul li.section {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 14px 12px 4px;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      max-width: 860px;
+      padding: 48px 56px;
+      overflow-x: hidden;
+    }
+
+    h1 { font-size: 32px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+    h2 { font-size: 22px; font-weight: 700; margin: 52px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 16px; font-weight: 600; margin: 28px 0 10px; color: var(--accent); }
+    h4 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: var(--orange); }
+    p  { margin-bottom: 12px; color: #cdd9e5; }
+    li { margin: 4px 0; color: #cdd9e5; }
+    ul, ol { padding-left: 22px; margin-bottom: 12px; }
+
+    .subtitle { font-size: 16px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Code ── */
+    pre {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 12px 0 22px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      position: relative;
+    }
+    code { font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace; }
+    p code, li code, td code {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 13px;
+      color: var(--orange);
+    }
+
+    /* Syntax highlighting */
+    .kw   { color: #ff7b72; }   /* keywords: fn, service, return, await, lock … */
+    .ty   { color: #79c0ff; }   /* types: string, int, bool … */
+    .str  { color: #a5d6ff; }   /* string literals */
+    .cm   { color: #8b949e; font-style: italic; } /* comments */
+    .num  { color: #f79100; }   /* numbers */
+    .fn   { color: #d2a8ff; }   /* function names */
+    .met  { color: #39d353; }   /* :method */
+    .var  { color: var(--text); }
+    .sql  { color: #a8daff; }   /* sql keyword */
+    .interp { color: #ffa657; } /* {var} interpolation */
+    .op   { color: var(--muted); } /* = . : */
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .badge-green  { background: #1a3a25; color: var(--green); border: 1px solid #2ea043; }
+    .badge-blue   { background: #1a2a3a; color: var(--accent); border: 1px solid #388bfd; }
+    .badge-orange { background: #3a2a10; color: var(--orange); border: 1px solid #d29922; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 13.5px; }
+    th { background: var(--bg3); color: var(--muted); font-weight: 600; text-align: left; padding: 8px 12px; border: 1px solid var(--border); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+    td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; }
+    tr:nth-child(even) td { background: #161b2266; }
+
+    /* ── Callout ── */
+    .callout {
+      border-left: 3px solid var(--yellow);
+      background: #2a2510;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: #ddd;
+    }
+    .callout.info   { border-color: var(--accent);  background: #0d1f33; }
+    .callout.danger { border-color: var(--red);     background: #2a0d0d; }
+    .callout strong { color: var(--yellow); }
+    .callout.info strong { color: var(--accent); }
+    .callout.danger strong { color: var(--red); }
+
+    /* ── Section anchor target ── */
+    [id] { scroll-margin-top: 24px; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="logo">
+    <h1>⚡ Sapi</h1>
+    <p>Référence du langage v2</p>
+  </div>
+  <ul>
+    <li class="section">Démarrage</li>
+    <li><a href="#intro">Introduction</a></li>
+    <li><a href="#cli">CLI</a></li>
+    <li><a href="#comments">Commentaires</a></li>
+
+    <li class="section">Structure</li>
+    <li><a href="#use">use — imports</a></li>
+    <li><a href="#database">database</a></li>
+    <li><a href="#service">service</a></li>
+    <li><a href="#routes">Routes HTTP</a></li>
+    <li><a href="#fn">Fonctions</a></li>
+
+    <li class="section">Types &amp; Variables</li>
+    <li><a href="#types">Types scalaires</a></li>
+    <li><a href="#vars">Déclarations</a></li>
+    <li><a href="#lock">lock (immut.)</a></li>
+    <li><a href="#strings">Chaînes &amp; interp.</a></li>
+    <li><a href="#lists">Listes</a></li>
+    <li><a href="#json">JSON</a></li>
+    <li><a href="#date">date / time</a></li>
+
+    <li class="section">Expressions</li>
+    <li><a href="#chain">Méthodes chaînées</a></li>
+    <li><a href="#dot">Dot-access JSON</a></li>
+    <li><a href="#index">Index de liste</a></li>
+    <li><a href="#fncall">Appels de fonction</a></li>
+
+    <li class="section">Contrôle</li>
+    <li><a href="#assign">Réassignation</a></li>
+    <li><a href="#if">if / else</a></li>
+    <li><a href="#for">Boucle for</a></li>
+    <li><a href="#push">push</a></li>
+    <li><a href="#return">return</a></li>
+    <li><a href="#await">await</a></li>
+
+    <li class="section">SQL</li>
+    <li><a href="#sql">Requêtes SQL</a></li>
+    <li><a href="#sqlcall">Appels SQL</a></li>
+
+    <li class="section">Documentation</li>
+    <li><a href="#docdoc">sapi doc</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════════════════ -->
+<main>
+
+  <h1>Sapi</h1>
+  <p class="subtitle">Référence complète du langage — génération de serveurs Axum/Tokio en Rust</p>
+
+  <!-- ─────────────────────────────────── INTRODUCTION -->
+  <section id="intro">
+    <h2>Introduction</h2>
+    <p>
+      <strong>Sapi</strong> (Slyders API) est un langage haut-niveau qui compile des fichiers <code>.sapi</code>
+      en projets Rust complets utilisant <strong>Axum</strong> (routeur HTTP) et <strong>Tokio</strong> (async runtime).
+      Un seul fichier source suffit pour définir des bases de données, des services, des routes HTTP et de la logique métier.
+    </p>
+    <p>Sapi génère du code Rust production-ready : connexions SQL, sérialisation JSON, CORS, logging, Swagger UI, rate limiting et timeouts.</p>
+  </section>
+
+  <!-- ─────────────────────────────────── CLI -->
+  <section id="cli">
+    <h2>CLI</h2>
+    <table>
+      <tr><th>Commande</th><th>Description</th></tr>
+      <tr><td><code>sapi build &lt;fichier.sapi&gt;</code></td><td>Compile vers un projet Rust dans <code>out/</code></td></tr>
+      <tr><td><code>sapi build &lt;fichier.sapi&gt; -o &lt;dossier&gt;</code></td><td>Spécifie le répertoire de sortie</td></tr>
+      <tr><td><code>sapi run &lt;fichier.sapi&gt;</code></td><td>Compile et lance le serveur</td></tr>
+      <tr><td><code>sapi watch &lt;fichier.sapi&gt;</code></td><td>Recompile à chaque modification</td></tr>
+      <tr><td><code>sapi doc &lt;fichier.sapi&gt;</code></td><td>Génère l'OpenAPI JSON sur stdout</td></tr>
+      <tr><td><code>sapi doc &lt;fichier.sapi&gt; --html -o docs/</code></td><td>Génère un site HTML Scalar interactif</td></tr>
+    </table>
+    <pre><code><span class="cm"># Compiler un projet</span>
+sapi build mon_api.sapi
+
+<span class="cm"># Générer la doc HTML (ouvrir docs/index.html)</span>
+sapi doc mon_api.sapi --html --output docs</code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── COMMENTS -->
+  <section id="comments">
+    <h2>Commentaires</h2>
+    <pre><code><span class="cm">// Commentaire ordinaire — ignoré par le compilateur</span>
+
+<span class="cm">/// Commentaire de documentation — apparaît dans la doc générée (sapi doc)</span>
+<span class="cm">/// Supporte plusieurs lignes consécutives.</span>
+<span class="kw">UserApi</span> <span class="kw">get</span> <span class="str">"/users"</span> {
+    <span class="cm">// ...</span>
+}</code></pre>
+    <p>Les <code>///</code> immédiatement au-dessus d'une route, d'un service ou d'une fonction sont extraits comme <strong>summary</strong> dans l'OpenAPI.</p>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── USE -->
+  <section id="use">
+    <h2>use — Imports</h2>
+    <pre><code><span class="kw">use</span> <span class="str">"std/http"</span></code></pre>
+    <p>Déclare les bibliothèques standard utilisées. <code>"std/http"</code> est la bibliothèque HTTP de base (inclut Axum, Tokio, serde).</p>
+  </section>
+
+  <!-- ─────────────────────────────────── DATABASE -->
+  <section id="database">
+    <h2>database</h2>
+    <p>Déclare une connexion à une base de données. Plusieurs bases peuvent coexister dans un même fichier.</p>
+    <pre><code><span class="kw">database</span> <span class="fn">MainDB</span> {
+    type: <span class="str">"postgres"</span>
+    host: <span class="fn">env</span>(<span class="str">"DB_HOST"</span>)   <span class="cm">// variable d'environnement</span>
+    port: <span class="fn">env</span>(<span class="str">"DB_PORT"</span>)
+    user: <span class="fn">env</span>(<span class="str">"DB_USER"</span>)
+    pass: <span class="fn">env</span>(<span class="str">"DB_PASS"</span>)
+    name: <span class="str">"ma_base"</span>
+    pool: <span class="num">10</span>               <span class="cm">// taille du pool de connexions</span>
+}
+
+<span class="kw">database</span> <span class="fn">LogDB</span> {
+    type: <span class="str">"postgres"</span>
+    host: <span class="str">"localhost"</span>    <span class="cm">// valeur littérale</span>
+    port: <span class="str">"5433"</span>
+    user: <span class="str">"logger"</span>
+    pass: <span class="str">"secret"</span>
+    name: <span class="str">"logs"</span>
+    pool: <span class="num">5</span>
+}</code></pre>
+
+    <table>
+      <tr><th>Champ</th><th>Valeurs</th><th>Description</th></tr>
+      <tr><td><code>type</code></td><td><code>"postgres"</code></td><td>SGBD cible (seul PostgreSQL pour l'instant)</td></tr>
+      <tr><td><code>host</code></td><td>littéral ou <code>env("VAR")</code></td><td>Hôte de la base</td></tr>
+      <tr><td><code>port</code></td><td>entier ou <code>env("VAR")</code></td><td>Port TCP</td></tr>
+      <tr><td><code>user</code></td><td>littéral ou <code>env("VAR")</code></td><td>Utilisateur SQL</td></tr>
+      <tr><td><code>pass</code></td><td>littéral ou <code>env("VAR")</code></td><td>Mot de passe</td></tr>
+      <tr><td><code>name</code></td><td>littéral ou <code>env("VAR")</code></td><td>Nom de la base</td></tr>
+      <tr><td><code>pool</code></td><td>entier</td><td>Connexions simultanées max</td></tr>
+    </table>
+  </section>
+
+  <!-- ─────────────────────────────────── SERVICE -->
+  <section id="service">
+    <h2>service</h2>
+    <p>Un service est un serveur HTTP. On peut en déclarer plusieurs (ports différents, configs différentes).</p>
+    <pre><code><span class="kw">service</span> <span class="fn">UserApi</span> {
+    port:    <span class="num">3000</span>
+    swagger: <span class="kw">true</span>          <span class="cm">// active /swagger-ui</span>
+    cors:    <span class="kw">true</span>          <span class="cm">// CORS ouvert (toutes origines)</span>
+    logging: <span class="str">"info"</span>
+}
+
+<span class="kw">service</span> <span class="fn">AdminApi</span> {
+    port:    <span class="num">3001</span>
+    swagger: <span class="kw">false</span>
+    cors:    [<span class="str">"https://admin.example.com"</span>, <span class="str">"https://backoffice.example.com"</span>]
+    limit:   <span class="num">50</span>            <span class="cm">// requêtes concurrentes max</span>
+    timeout: <span class="num">30</span>            <span class="cm">// secondes avant timeout</span>
+    logging: <span class="str">"debug"</span>
+}</code></pre>
+
+    <table>
+      <tr><th>Champ</th><th>Valeurs possibles</th><th>Description</th></tr>
+      <tr><td><code>port</code></td><td>entier</td><td>Port d'écoute TCP (obligatoire)</td></tr>
+      <tr><td><code>swagger</code></td><td><code>true</code> / <code>false</code></td><td>Active <code>/swagger-ui</code> avec l'UI Swagger</td></tr>
+      <tr><td><code>cors</code></td><td><code>true</code> / <code>"origin"</code> / <code>["o1","o2"]</code></td><td>CORS : all / une origine / liste</td></tr>
+      <tr><td><code>limit</code></td><td>entier</td><td>Limite de concurrence (rate limiting)</td></tr>
+      <tr><td><code>timeout</code></td><td>entier (secondes)</td><td>Timeout de requête</td></tr>
+      <tr><td><code>logging</code></td><td><code>"info"</code> <code>"debug"</code> <code>"warn"</code> <code>"error"</code></td><td>Niveau de log tracing</td></tr>
+    </table>
+  </section>
+
+  <!-- ─────────────────────────────────── ROUTES -->
+  <section id="routes">
+    <h2>Routes HTTP</h2>
+    <p>Une route est associée à un service par son nom. La syntaxe est :</p>
+    <pre><code><span class="cm">// NomDuService  méthode  "chemin"  { corps }</span>
+
+<span class="cm">/// Doc de la route (apparaît dans la doc générée)</span>
+<span class="fn">UserApi</span> <span class="kw">get</span> <span class="str">"/users"</span> {
+    <span class="cm">// corps de la route</span>
+}
+
+<span class="fn">UserApi</span> <span class="kw">post</span>   <span class="str">"/users"</span>        { <span class="cm">/* ... */</span> }
+<span class="fn">UserApi</span> <span class="kw">put</span>    <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }
+<span class="fn">UserApi</span> <span class="kw">patch</span>  <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }
+<span class="fn">UserApi</span> <span class="kw">delete</span> <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }</code></pre>
+
+    <p>Les paramètres de chemin <code>:param</code> sont automatiquement convertis en <code>{param}</code> dans l'OpenAPI généré.</p>
+    <div class="callout info">
+      <strong>Info</strong> — Chaque route peut lire ses variables locales, appeler des fonctions, exécuter du SQL et retourner une valeur.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── FONCTIONS -->
+  <section id="fn">
+    <h2>Fonctions</h2>
+    <p>Les fonctions sont déclarées au niveau racine du fichier et peuvent être appelées depuis n'importe quelle route.</p>
+
+    <h3>Fonction synchrone</h3>
+    <pre><code><span class="kw">fn</span> <span class="fn">greet</span>(<span class="ty">string</span> name) {
+    <span class="ty">string</span> upper <span class="op">=</span> name<span class="met">:upper</span>
+    <span class="ty">string</span> msg   <span class="op">=</span> <span class="str">"Bonjour, <span class="interp">{upper}</span>!"</span>
+    <span class="kw">return</span> msg
+}
+
+<span class="cm">// Appel dans une route</span>
+<span class="fn">UserApi</span> <span class="kw">get</span> <span class="str">"/hello"</span> {
+    <span class="ty">string</span> result <span class="op">=</span> <span class="fn">greet</span>(<span class="str">"Alice"</span>)
+    <span class="kw">return</span> result
+}</code></pre>
+
+    <h3>Fonction asynchrone</h3>
+    <pre><code><span class="kw">async fn</span> <span class="fn">fetchLabel</span>(<span class="ty">string</span> key, <span class="ty">string</span> lang) {
+    <span class="ty">string</span> upper <span class="op">=</span> key<span class="met">:upper</span>
+    <span class="ty">string</span> label <span class="op">=</span> <span class="str">"<span class="interp">{upper}</span> [<span class="interp">{lang}</span>]"</span>
+    <span class="kw">return</span> label
+}
+
+<span class="cm">// Appel avec await dans une route</span>
+<span class="fn">UserApi</span> <span class="kw">get</span> <span class="str">"/label"</span> {
+    <span class="kw">await</span> <span class="ty">string</span> result <span class="op">=</span> <span class="fn">fetchLabel</span>(<span class="str">"welcome"</span>, <span class="str">"fr"</span>)
+    <span class="kw">return</span> result
+}</code></pre>
+
+    <div class="callout">
+      <strong>Note</strong> — Les paramètres de fonction n'acceptent que des types scalaires (<code>string</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>date</code>, <code>time</code>). Pas de <code>list:T</code> ni de <code>json</code> en paramètre.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── TYPES -->
+  <section id="types">
+    <h2>Types scalaires</h2>
+    <table>
+      <tr><th>Type Sapi</th><th>Type Rust généré</th><th>Exemple</th></tr>
+      <tr><td><code>string</code></td><td><code>String</code></td><td><code>"bonjour"</code></td></tr>
+      <tr><td><code>int</code></td><td><code>i64</code></td><td><code>42</code></td></tr>
+      <tr><td><code>float</code></td><td><code>f64</code></td><td><code>3.14</code></td></tr>
+      <tr><td><code>bool</code></td><td><code>bool</code></td><td><code>true</code> / <code>false</code></td></tr>
+      <tr><td><code>date</code></td><td><code>chrono::NaiveDate</code></td><td><code>new date()</code></td></tr>
+      <tr><td><code>time</code></td><td><code>i64</code> (timestamp ms)</td><td><code>new time()</code></td></tr>
+      <tr><td><code>number</code></td><td><code>f64</code></td><td>type numérique générique</td></tr>
+      <tr><td><code>json</code></td><td><code>serde_json::Value</code></td><td><code>{ "clé": "valeur" }</code></td></tr>
+      <tr><td><code>list:T</code></td><td><code>Vec&lt;T&gt;</code></td><td><code>["a", "b"]</code></td></tr>
+    </table>
+  </section>
+
+  <!-- ─────────────────────────────────── VARS -->
+  <section id="vars">
+    <h2>Déclarations de variables</h2>
+    <pre><code><span class="ty">string</span> nom    <span class="op">=</span> <span class="str">"Alice"</span>
+<span class="ty">int</span>    age    <span class="op">=</span> <span class="num">28</span>
+<span class="ty">float</span>  note   <span class="op">=</span> <span class="num">18.5</span>
+<span class="ty">bool</span>   actif  <span class="op">=</span> <span class="kw">true</span>
+<span class="ty">date</span>   today  <span class="op">=</span> <span class="kw">new date</span>()
+<span class="ty">int</span>    ts     <span class="op">=</span> <span class="kw">new time</span>()</code></pre>
+
+    <p>Le compilateur émet <code>let mut</code> par défaut pour permettre la <a href="#assign">réassignation</a>.</p>
+  </section>
+
+  <!-- ─────────────────────────────────── LOCK -->
+  <section id="lock">
+    <h2>lock — Immutabilité</h2>
+    <p>Le mot-clé <code>lock</code> marque une variable comme immuable (<code>let</code> sans <code>mut</code> en Rust). Obligatoire sur les listes et JSON que vous ne voulez pas modifier.</p>
+    <pre><code><span class="kw">lock</span> <span class="ty">string</span>     version  <span class="op">=</span> <span class="str">"1.0.0"</span>
+<span class="kw">lock</span> <span class="ty">list:string</span> tags     <span class="op">=</span> [<span class="str">"rust"</span>, <span class="str">"axum"</span>, <span class="str">"sapi"</span>]
+<span class="kw">lock</span> <span class="ty">json</span>        config   <span class="op">=</span> { <span class="str">"env"</span>: <span class="str">"prod"</span>, <span class="str">"debug"</span>: <span class="kw">false</span> }</code></pre>
+
+    <div class="callout danger">
+      <strong>Erreur</strong> — Appeler <code>:push()</code> sur une liste <code>lock</code> est une erreur de compilation.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── STRINGS -->
+  <section id="strings">
+    <h2>Chaînes &amp; Interpolation</h2>
+    <p>Les chaînes sont délimitées par des guillemets doubles. Les variables sont interpolées avec <code>{nom}</code>.</p>
+    <pre><code><span class="ty">string</span> prenom <span class="op">=</span> <span class="str">"Alice"</span>
+<span class="ty">string</span> msg    <span class="op">=</span> <span class="str">"Bonjour, <span class="interp">{prenom}</span> !"</span>   <span class="cm">// → "Bonjour, Alice !"</span>
+<span class="ty">string</span> multi  <span class="op">=</span> <span class="str">"<span class="interp">{prenom}</span> a <span class="interp">{age}</span> ans"</span>  <span class="cm">// plusieurs variables</span></code></pre>
+
+    <div class="callout">
+      <strong>Note</strong> — Seuls les types scalaires (<code>string</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>date</code>) peuvent être interpolés. Les variables <code>json</code> et <code>list</code> ne peuvent pas apparaître dans <code>{…}</code>.
+    </div>
+
+    <h3>Séquences d'échappement</h3>
+    <pre><code><span class="ty">string</span> s1 <span class="op">=</span> <span class="str">"ligne 1\nligne 2"</span>   <span class="cm">// \n : saut de ligne</span>
+<span class="ty">string</span> s2 <span class="op">=</span> <span class="str">"tab\there"</span>          <span class="cm">// \t : tabulation</span>
+<span class="ty">string</span> s3 <span class="op">=</span> <span class="str">"guillemet : \""</span>     <span class="cm">// \" : guillemet</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── LISTS -->
+  <section id="lists">
+    <h2>Listes</h2>
+    <p>Une liste est typée : le type de l'élément suit <code>list:</code>.</p>
+    <pre><code><span class="ty">list:string</span> fruits <span class="op">=</span> [<span class="str">"pomme"</span>, <span class="str">"poire"</span>, <span class="str">"cerise"</span>]
+<span class="ty">list:int</span>    scores <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>]
+<span class="ty">list:string</span> vide   <span class="op">=</span> []                 <span class="cm">// liste vide (mutable)</span>
+
+<span class="kw">lock</span> <span class="ty">list:float</span> prix <span class="op">=</span> [<span class="num">9.99</span>, <span class="num">14.99</span>]   <span class="cm">// immuable</span></code></pre>
+
+    <h3>Accès par index</h3>
+    <pre><code><span class="ty">string</span> premier <span class="op">=</span> fruits[<span class="num">0</span>]   <span class="cm">// "pomme"</span>
+<span class="ty">int</span>    troisieme <span class="op">=</span> scores[<span class="num">2</span>]  <span class="cm">// 30</span></code></pre>
+
+    <h3>Méthodes de liste</h3>
+    <table>
+      <tr><th>Méthode</th><th>Retour</th><th>Description</th></tr>
+      <tr><td><code>:count</code></td><td><code>int</code></td><td>Nombre d'éléments</td></tr>
+      <tr><td><code>:first</code></td><td><code>T?</code></td><td>Premier élément (optionnel)</td></tr>
+      <tr><td><code>:last</code></td><td><code>T?</code></td><td>Dernier élément (optionnel)</td></tr>
+      <tr><td><code>:push(val)</code></td><td>—</td><td>Ajoute un élément (liste mutable)</td></tr>
+    </table>
+    <pre><code><span class="ty">int</span>    total   <span class="op">=</span> fruits<span class="met">:count</span>       <span class="cm">// 3</span>
+<span class="ty">string</span> dernier <span class="op">=</span> fruits<span class="met">:last</span>        <span class="cm">// "cerise"</span>
+
+<span class="ty">list:string</span> output <span class="op">=</span> []
+output<span class="met">:push</span>(<span class="str">"banane"</span>)</code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── JSON -->
+  <section id="json">
+    <h2>JSON</h2>
+    <p>Les objets JSON sont des littéraux clé/valeur. Les valeurs doivent être des littéraux ou des chaînes interpolées.</p>
+    <pre><code><span class="ty">string</span> env <span class="op">=</span> <span class="str">"production"</span>
+<span class="ty">int</span>    ver <span class="op">=</span> <span class="num">2</span>
+
+<span class="kw">lock</span> <span class="ty">json</span> info <span class="op">=</span> {
+    <span class="str">"env"</span>:     <span class="str">"<span class="interp">{env}</span>"</span>,   <span class="cm">// variable string via interpolation</span>
+    <span class="str">"version"</span>: <span class="num">2</span>,           <span class="cm">// littéral entier</span>
+    <span class="str">"ratio"</span>:   <span class="num">99.9</span>,        <span class="cm">// littéral float</span>
+    <span class="str">"active"</span>:  <span class="kw">true</span>         <span class="cm">// littéral bool</span>
+}</code></pre>
+
+    <div class="callout danger">
+      <strong>Règle importante</strong> — Dans un objet JSON, les valeurs ne peuvent PAS être des idents nus (<code>"env": env</code> est interdit). Pour insérer une variable, utilisez l'interpolation de chaîne : <code>"env": "{env}"</code>.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── DATE/TIME -->
+  <section id="date">
+    <h2>date &amp; time</h2>
+    <pre><code><span class="ty">date</span> today <span class="op">=</span> <span class="kw">new date</span>()   <span class="cm">// date courante (YYYY-MM-DD)</span>
+<span class="ty">int</span>  nowMs  <span class="op">=</span> <span class="kw">new time</span>()   <span class="cm">// timestamp Unix en millisecondes</span>
+
+<span class="ty">string</span> msg <span class="op">=</span> <span class="str">"Aujourd'hui : <span class="interp">{today}</span>"</span>
+<span class="ty">string</span> ts  <span class="op">=</span> <span class="str">"Timestamp : <span class="interp">{nowMs}</span>"</span></code></pre>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── CHAIN METHODS -->
+  <section id="chain">
+    <h2>Méthodes chaînées</h2>
+    <p>La syntaxe <code>variable:methode</code> applique une transformation. Les méthodes peuvent être enchaînées et acceptent des arguments.</p>
+    <div class="callout danger">
+      <strong>Règle</strong> — La chaîne doit commencer par un <strong>identifiant de variable</strong>. On ne peut pas chaîner directement sur un littéral : <code>"hello":upper</code> est interdit, mais <code>msg:upper</code> est valide.
+    </div>
+
+    <h3>Méthodes de chaîne (string)</h3>
+    <table>
+      <tr><th>Méthode</th><th>Retour</th><th>Description</th><th>Exemple</th></tr>
+      <tr><td><code>:upper</code></td><td>string</td><td>Majuscules</td><td><code>s:upper</code></td></tr>
+      <tr><td><code>:lower</code></td><td>string</td><td>Minuscules</td><td><code>s:lower</code></td></tr>
+      <tr><td><code>:trim</code></td><td>string</td><td>Supprime espaces début/fin</td><td><code>s:trim</code></td></tr>
+      <tr><td><code>:len</code></td><td>int</td><td>Longueur en caractères</td><td><code>s:len</code></td></tr>
+      <tr><td><code>:reverse</code></td><td>string</td><td>Inverse les caractères</td><td><code>s:reverse</code></td></tr>
+      <tr><td><code>:replace(a, b)</code></td><td>string</td><td>Remplace toutes les occurrences de <code>a</code> par <code>b</code></td><td><code>s:replace(" ", "-")</code></td></tr>
+      <tr><td><code>:contains(txt)</code></td><td>bool</td><td>Vrai si la chaîne contient <code>txt</code></td><td><code>s:contains("ok")</code></td></tr>
+      <tr><td><code>:starts_with(txt)</code></td><td>bool</td><td>Vrai si commence par <code>txt</code></td><td><code>s:starts_with("/")</code></td></tr>
+      <tr><td><code>:ends_with(txt)</code></td><td>bool</td><td>Vrai si se termine par <code>txt</code></td><td><code>s:ends_with(".com")</code></td></tr>
+      <tr><td><code>:split(sep)</code></td><td>list:string</td><td>Divise en liste de chaînes</td><td><code>s:split(",")</code></td></tr>
+    </table>
+
+    <h3>Méthodes numériques (int / float)</h3>
+    <table>
+      <tr><th>Méthode</th><th>Retour</th><th>Description</th></tr>
+      <tr><td><code>:abs</code></td><td>même type</td><td>Valeur absolue</td></tr>
+      <tr><td><code>:round</code></td><td>int</td><td>Arrondi (sans argument) ou à N décimales</td></tr>
+      <tr><td><code>:ceil</code></td><td>int</td><td>Arrondi au supérieur</td></tr>
+      <tr><td><code>:floor</code></td><td>int</td><td>Arrondi à l'inférieur</td></tr>
+      <tr><td><code>:is_even</code></td><td>bool</td><td>Vrai si pair</td></tr>
+      <tr><td><code>:is_odd</code></td><td>bool</td><td>Vrai si impair</td></tr>
+      <tr><td><code>:to_str</code></td><td>string</td><td>Conversion en chaîne</td></tr>
+    </table>
+
+    <h3>Enchaînement multiple</h3>
+    <pre><code><span class="ty">string</span> raw     <span class="op">=</span> <span class="str">"  hello world  "</span>
+<span class="ty">string</span> cleaned <span class="op">=</span> raw<span class="met">:trim</span><span class="met">:upper</span>              <span class="cm">// "HELLO WORLD"</span>
+<span class="ty">int</span>    len     <span class="op">=</span> raw<span class="met">:trim</span><span class="met">:len</span>               <span class="cm">// 11</span>
+<span class="ty">bool</span>  found   <span class="op">=</span> raw<span class="met">:trim</span><span class="met">:contains</span>(<span class="str">"hello"</span>) <span class="cm">// true</span>
+
+<span class="ty">string</span> slug   <span class="op">=</span> raw<span class="met">:trim</span><span class="met">:lower</span><span class="met">:replace</span>(<span class="str">" "</span>, <span class="str">"-"</span>) <span class="cm">// "hello-world"</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── DOT ACCESS -->
+  <section id="dot">
+    <h2>Dot-access JSON</h2>
+    <p>Navigue dans un objet <code>json</code> avec la notation point. Le résultat est toujours une <code>string</code>. Des méthodes chaînées peuvent être appliquées ensuite.</p>
+    <pre><code><span class="kw">lock</span> <span class="ty">json</span> user <span class="op">=</span> {
+    <span class="str">"name"</span>:    <span class="str">"Bob Dupont"</span>,
+    <span class="str">"email"</span>:   <span class="str">"bob@example.com"</span>,
+    <span class="str">"country"</span>: <span class="str">"Canada"</span>
+}
+
+<span class="ty">string</span> name    <span class="op">=</span> user<span class="op">.name</span>                   <span class="cm">// "Bob Dupont"</span>
+<span class="ty">string</span> email   <span class="op">=</span> user<span class="op">.email</span>                  <span class="cm">// "bob@example.com"</span>
+<span class="ty">string</span> upper   <span class="op">=</span> user<span class="op">.name</span><span class="met">:upper</span>             <span class="cm">// "BOB DUPONT"</span>
+<span class="ty">bool</span>   isCA    <span class="op">=</span> user<span class="op">.country</span><span class="met">:starts_with</span>(<span class="str">"Can"</span>) <span class="cm">// true</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── INDEX -->
+  <section id="index">
+    <h2>Accès par index</h2>
+    <pre><code><span class="kw">lock</span> <span class="ty">list:string</span> items <span class="op">=</span> [<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>]
+
+<span class="ty">string</span> premier  <span class="op">=</span> items[<span class="num">0</span>]   <span class="cm">// "a"</span>
+<span class="ty">string</span> deuxieme <span class="op">=</span> items[<span class="num">1</span>]   <span class="cm">// "b"</span>
+
+<span class="cm">// Avec une variable comme index</span>
+<span class="ty">int</span>    idx      <span class="op">=</span> <span class="num">2</span>
+<span class="ty">string</span> element  <span class="op">=</span> items[idx]   <span class="cm">// "c"</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── FN CALL -->
+  <section id="fncall">
+    <h2>Appels de fonction</h2>
+    <pre><code><span class="ty">string</span> msg    <span class="op">=</span> <span class="fn">greet</span>(<span class="str">"Alice"</span>)
+<span class="ty">int</span>    longueur <span class="op">=</span> <span class="fn">nameLength</span>(nom)
+<span class="ty">string</span> slug   <span class="op">=</span> <span class="fn">buildSlug</span>(<span class="str">"Mon Titre"</span>)
+
+<span class="cm">// Plusieurs arguments</span>
+<span class="kw">await</span> <span class="ty">string</span> label <span class="op">=</span> <span class="fn">fetchLabel</span>(<span class="str">"welcome"</span>, <span class="str">"fr"</span>)</code></pre>
+    <p>Les noms de fonctions sont automatiquement convertis en <code>snake_case</code> dans le Rust généré (<code>nameLength</code> → <code>name_length</code>).</p>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── ASSIGN -->
+  <section id="assign">
+    <h2>Réassignation</h2>
+    <p>Une variable peut être réassignée (si elle n'est pas <code>lock</code>) avec la syntaxe <code>nom = nouvelleValeur</code>.</p>
+    <pre><code><span class="ty">string</span> name <span class="op">=</span> <span class="str">"world"</span>
+<span class="ty">string</span> msg  <span class="op">=</span> <span class="fn">greet</span>(name)   <span class="cm">// "Bonjour, world!"</span>
+
+name <span class="op">=</span> <span class="str">"sapi"</span>               <span class="cm">// réassignation</span>
+msg  <span class="op">=</span> <span class="fn">greet</span>(name)         <span class="cm">// "Bonjour, sapi!"</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── IF / ELSE -->
+  <section id="if">
+    <h2>if / else / else if</h2>
+    <p>Les branches conditionnelles permettent d'exécuter du code différent selon une condition. On peut chaîner autant de <code>else if</code> que nécessaire. Le <code>else</code> final est optionnel.</p>
+
+    <h3>Syntaxe</h3>
+    <pre><code><span class="kw">if</span> condition {
+    <span class="cm">// branche vraie</span>
+} <span class="kw">else if</span> autre_condition {
+    <span class="cm">// branche intermédiaire</span>
+} <span class="kw">else</span> {
+    <span class="cm">// branche par défaut</span>
+}</code></pre>
+
+    <h3>Opérateurs de comparaison</h3>
+    <table>
+      <tr><th>Opérateur</th><th>Signification</th></tr>
+      <tr><td><code>==</code></td><td>Égal à</td></tr>
+      <tr><td><code>!=</code></td><td>Différent de</td></tr>
+      <tr><td><code>&lt;</code></td><td>Inférieur strict</td></tr>
+      <tr><td><code>&gt;</code></td><td>Supérieur strict</td></tr>
+      <tr><td><code>&lt;=</code></td><td>Inférieur ou égal</td></tr>
+      <tr><td><code>&gt;=</code></td><td>Supérieur ou égal</td></tr>
+    </table>
+
+    <h3>Exemple — classification numérique</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/classify/{n}"</span> {
+    <span class="kw">route</span> { <span class="ty">int</span> n }
+    <span class="kw">if</span> n <span class="op">&gt;</span> <span class="num">0</span> {
+        <span class="kw">return</span> <span class="str">"positive"</span>
+    } <span class="kw">else if</span> n <span class="op">&lt;</span> <span class="num">0</span> {
+        <span class="kw">return</span> <span class="str">"negative"</span>
+    } <span class="kw">else</span> {
+        <span class="kw">return</span> <span class="str">"zero"</span>
+    }
+}</code></pre>
+
+    <h3>Exemple — retour avec code HTTP</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/check/{code}"</span> {
+    <span class="kw">route</span> { <span class="ty">int</span> code }
+    <span class="kw">if</span> code <span class="op">==</span> <span class="num">200</span> {
+        <span class="kw">return</span> <span class="num">200</span>: { <span class="ty">string</span> result <span class="op">=</span> <span class="str">"ok"</span> }
+    } <span class="kw">else if</span> code <span class="op">==</span> <span class="num">404</span> {
+        <span class="kw">return</span> <span class="num">404</span>: { <span class="ty">string</span> result <span class="op">=</span> <span class="str">"not found"</span> }
+    } <span class="kw">else</span> {
+        <span class="kw">return</span> <span class="num">400</span>: { <span class="ty">string</span> result <span class="op">=</span> <span class="str">"bad code"</span> }
+    }
+}</code></pre>
+
+    <h3>Exemple — if sans else (réassignation)</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/even/{n}"</span> {
+    <span class="kw">route</span> { <span class="ty">int</span> n }
+    <span class="ty">string</span> msg <span class="op">=</span> <span class="str">"odd"</span>
+    <span class="kw">if</span> n <span class="op">==</span> <span class="num">2</span> {
+        msg <span class="op">=</span> <span class="str">"even"</span>   <span class="cm">// réassignation dans le bloc if</span>
+    }
+    <span class="kw">return</span> msg
+}</code></pre>
+
+    <h3>Exemple — comparaison de chaîne</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/greet/{lang}"</span> {
+    <span class="kw">route</span> { <span class="ty">string</span> lang }
+    <span class="kw">if</span> lang <span class="op">==</span> <span class="str">"fr"</span> {
+        <span class="kw">return</span> <span class="str">"Bonjour"</span>
+    } <span class="kw">else if</span> lang <span class="op">==</span> <span class="str">"es"</span> {
+        <span class="kw">return</span> <span class="str">"Hola"</span>
+    } <span class="kw">else</span> {
+        <span class="kw">return</span> <span class="str">"Hello"</span>
+    }
+}</code></pre>
+
+    <div class="callout">
+      <strong>Note</strong> — Un bloc <code>if</code> peut contenir n'importe quelle instruction : déclarations, réassignations, appels SQL, retours. Le compilateur génère du Rust idiomatique avec des blocs conditionnels.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── FOR -->
+  <section id="for">
+    <h2>Boucle for</h2>
+    <p>Itère sur une liste. La syntaxe utilise <code>:for</code> directement sur la variable liste.</p>
+
+    <h3>Sans index</h3>
+    <pre><code><span class="kw">lock</span> <span class="ty">list:string</span> fruits <span class="op">=</span> [<span class="str">"pomme"</span>, <span class="str">"poire"</span>, <span class="str">"cerise"</span>]
+
+fruits<span class="met">:for</span> <span class="ty">string</span> fruit {
+    <span class="ty">string</span> upper <span class="op">=</span> fruit<span class="met">:upper</span>
+    output<span class="met">:push</span>(upper)
+}</code></pre>
+
+    <h3>Avec index</h3>
+    <pre><code>fruits<span class="met">:for</span> <span class="ty">string</span> fruit, <span class="ty">int</span> i {
+    <span class="ty">string</span> ligne <span class="op">=</span> <span class="str">"<span class="interp">{i}</span>: <span class="interp">{fruit}</span>"</span>
+    output<span class="met">:push</span>(ligne)
+}</code></pre>
+
+    <h3>Exemple complet</h3>
+    <pre><code><span class="fn">UserApi</span> <span class="kw">get</span> <span class="str">"/tags"</span> {
+    <span class="kw">lock</span> <span class="ty">list:string</span> base      <span class="op">=</span> [<span class="str">"rust"</span>, <span class="str">"axum"</span>, <span class="str">"sapi"</span>]
+    <span class="ty">list:string</span>      formatted <span class="op">=</span> []
+
+    base<span class="met">:for</span> <span class="ty">string</span> tag, <span class="ty">int</span> i {
+        <span class="ty">string</span> entry <span class="op">=</span> <span class="str">"<span class="interp">{i}</span>: <span class="interp">{tag}</span>"</span>
+        formatted<span class="met">:push</span>(entry<span class="met">:upper</span>)
+    }
+
+    <span class="ty">int</span>    count <span class="op">=</span> formatted<span class="met">:count</span>
+    <span class="ty">string</span> first <span class="op">=</span> formatted[<span class="num">0</span>]
+
+    <span class="kw">return</span> {
+        <span class="ty">int</span>    count <span class="op">=</span> count,
+        <span class="ty">string</span> first <span class="op">=</span> first
+    }
+}</code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── PUSH -->
+  <section id="push">
+    <h2>push</h2>
+    <p>Ajoute un élément à une liste mutable (non-<code>lock</code>).</p>
+    <pre><code><span class="ty">list:string</span> resultat <span class="op">=</span> []
+
+resultat<span class="met">:push</span>(<span class="str">"premier"</span>)
+resultat<span class="met">:push</span>(<span class="str">"deuxième"</span>)
+<span class="cm">// resultat = ["premier", "deuxième"]</span></code></pre>
+  </section>
+
+  <!-- ─────────────────────────────────── RETURN -->
+  <section id="return">
+    <h2>return</h2>
+    <p>Deux formes de retour : valeur unique ou multi-champs (objet JSON en réponse).</p>
+
+    <h3>Valeur unique</h3>
+    <pre><code><span class="kw">return</span> msg          <span class="cm">// retourne une variable</span>
+<span class="kw">return</span> <span class="str">"ok"</span>         <span class="cm">// retourne un littéral</span>
+<span class="kw">return</span> rows         <span class="cm">// retourne un résultat SQL (Vec de struct)</span></code></pre>
+
+    <h3>Multi-champs (JSON structuré)</h3>
+    <p>Déclare chaque champ de la réponse avec son type et sa valeur. Génère un struct Rust sérialisé en JSON.</p>
+    <pre><code><span class="kw">return</span> {
+    <span class="ty">int</span>    total   <span class="op">=</span> count,
+    <span class="ty">string</span> status  <span class="op">=</span> msg,
+    <span class="ty">bool</span>   healthy <span class="op">=</span> alive,
+    <span class="ty">float</span>  ratio   <span class="op">=</span> pct
+}</code></pre>
+    <p>Résultat HTTP : <code>200 application/json</code> avec le corps <code>{"total": 42, "status": "ok", ...}</code></p>
+  </section>
+
+  <!-- ─────────────────────────────────── AWAIT -->
+  <section id="await">
+    <h2>await</h2>
+    <p>Attend le résultat d'une fonction asynchrone ou d'une requête SQL.</p>
+
+    <h3>Fonction async</h3>
+    <pre><code><span class="kw">await</span> <span class="ty">string</span> label <span class="op">=</span> <span class="fn">fetchLabel</span>(<span class="str">"welcome"</span>, <span class="str">"fr"</span>)
+<span class="cm">// type   nom     = appel()</span></code></pre>
+
+    <h3>Requête SQL</h3>
+    <pre><code><span class="kw">await</span> <span class="fn">User</span> rows   <span class="op">=</span> getUsers().<span class="met">many</span>()       <span class="cm">// Vec&lt;User&gt; — sans arguments</span>
+<span class="kw">await</span> <span class="fn">User</span> user   <span class="op">=</span> getFirst().<span class="met">one</span>()        <span class="cm">// User (erreur si absent)</span>
+<span class="kw">await</span> <span class="fn">Run</span>  result <span class="op">=</span> insertUser({ name: name, email: email }).<span class="met">run</span>() <span class="cm">// avec arguments</span>
+<span class="cm">// StructType  nom = sqlVar().méthode()             — {} optionnel si aucun placeholder</span>
+<span class="cm">// StructType  nom = sqlVar({ clé: val }).méthode()  — avec liaisons nommées</span></code></pre>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── SQL -->
+  <section id="sql">
+    <h2>Requêtes SQL — Déclaration</h2>
+    <p>Une requête SQL est d'abord déclarée avec <code>sql</code>, puis exécutée avec <code>await … .one() | .many() | .run()</code>.</p>
+
+    <h3>SELECT avec colonnes de sortie</h3>
+    <pre><code><span class="sql">sql</span> getUsers <span class="op">=</span> <span class="str">`SELECT id, name, email FROM users ORDER BY name`</span> : {
+    <span class="ty">int</span>:id, <span class="ty">string</span>:name, <span class="ty">string</span>:email
+} use MainDB</code></pre>
+
+    <h3>SELECT avec placeholder</h3>
+    <pre><code><span class="sql">sql</span> searchUsers <span class="op">=</span> <span class="str">`SELECT id, name FROM users WHERE email LIKE <span class="interp">{domain}</span>`</span> : {
+    <span class="ty">int</span>:id, <span class="ty">string</span>:name
+} use MainDB
+
+<span class="kw">await</span> <span class="fn">SearchResult</span> results <span class="op">=</span> searchUsers({ domain: domain }).<span class="met">many</span>()</code></pre>
+
+    <h3>INSERT / UPDATE / DELETE (sans sortie)</h3>
+    <pre><code><span class="sql">sql</span> insertUser <span class="op">=</span>
+    <span class="str">`INSERT INTO users (name, email) VALUES (<span class="interp">{name}</span>, <span class="interp">{email}</span>)`</span>
+
+<span class="kw">await</span> <span class="fn">InsertResult</span> r <span class="op">=</span> insertUser({
+    name:  name,
+    email: email
+}).<span class="met">run</span>()</code></pre>
+
+    <h3>DELETE sans arguments</h3>
+    <pre><code><span class="sql">sql</span> purge <span class="op">=</span> <span class="str">`DELETE FROM users WHERE active = false`</span>
+<span class="kw">await</span> <span class="fn">PurgeResult</span> r <span class="op">=</span> purge().<span class="met">run</span>()    <span class="cm">// {} omis — aucun placeholder</span></code></pre>
+
+    <table>
+      <tr><th>Syntaxe de la déclaration</th><th>Explication</th></tr>
+      <tr><td><code>sql nom = `QUERY`</code></td><td>Query SQL en backticks</td></tr>
+      <tr><td><code>: { type:col, … }</code></td><td>Colonnes de sortie (obligatoire pour SELECT)</td></tr>
+      <tr><td><code>use NomDB</code></td><td>Base de données cible (optionnel, défaut = première déclarée)</td></tr>
+    </table>
+  </section>
+
+  <!-- ─────────────────────────────────── SQL CALL -->
+  <section id="sqlcall">
+    <h2>Requêtes SQL — Exécution</h2>
+    <table>
+      <tr><th>Méthode</th><th>Rust généré</th><th>Usage</th></tr>
+      <tr><td><code>.one()</code></td><td><code>fetch_one()</code></td><td>Attend exactement 1 ligne (erreur si absent)</td></tr>
+      <tr><td><code>.many()</code></td><td><code>fetch_all()</code></td><td>Retourne toutes les lignes (<code>Vec&lt;T&gt;</code>)</td></tr>
+      <tr><td><code>.run()</code></td><td><code>execute()</code></td><td>Requête d'écriture, retourne le nb de lignes affectées</td></tr>
+    </table>
+
+    <h3>Arguments nommés</h3>
+    <p>Les placeholders <code>{nom}</code> dans la query SQL sont liés par nom dans l'appel :</p>
+    <pre><code><span class="sql">sql</span> updateUser <span class="op">=</span>
+    <span class="str">`UPDATE users SET name = <span class="interp">{newName}</span>, email = <span class="interp">{newEmail}</span> WHERE id = <span class="interp">{userId}</span>`</span>
+
+<span class="kw">await</span> <span class="fn">UpdateResult</span> r <span class="op">=</span> updateUser({
+    newName:  newName,
+    newEmail: newEmail,
+    userId:   userId
+}).<span class="met">run</span>()</code></pre>
+
+    <div class="callout info">
+      <strong>Sécurité</strong> — Sapi génère des requêtes paramétrées (<code>$1, $2, …</code>) via SQLx. L'injection SQL est impossible grâce aux bindings typés.
+    </div>
+
+    <h3>Accolades optionnelles</h3>
+    <p>Lorsqu'une requête SQL ne contient <strong>aucun placeholder</strong> <code>{…}</code>, les accolades peuvent être omises dans l'appel :</p>
+    <pre><code><span class="sql">sql</span> getAll  <span class="op">=</span> <span class="str">`SELECT id, name FROM users`</span> : { <span class="ty">int</span>:id, <span class="ty">string</span>:name }
+<span class="sql">sql</span> purge   <span class="op">=</span> <span class="str">`DELETE FROM logs WHERE old = true`</span>
+
+<span class="kw">await</span> <span class="fn">User</span> rows <span class="op">=</span> getAll().<span class="met">many</span>()   <span class="cm">// ✓ {} omis</span>
+<span class="kw">await</span> <span class="fn">Res</span>  r    <span class="op">=</span> purge().<span class="met">run</span>()    <span class="cm">// ✓ {} omis</span>
+
+<span class="cm">// Les deux formes sont équivalentes :</span>
+<span class="kw">await</span> <span class="fn">User</span> rows2 <span class="op">=</span> getAll({}).<span class="met">many</span>()  <span class="cm">// ✓ {} explicite (rétrocompatible)</span></code></pre>
+
+    <h3>Schéma généré automatiquement</h3>
+    <p>Pour chaque <code>sql</code> avec colonnes de sortie, Sapi génère un struct Rust :</p>
+    <pre><code><span class="cm">// Pour : sql getUsers = `…` : { int:id, string:name, string:email }</span>
+<span class="cm">// Sapi génère :</span>
+#[derive(sqlx::FromRow, serde::Serialize)]
+pub struct GetUsers {
+    pub id:    i64,
+    pub name:  String,
+    pub email: String,
+}</code></pre>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── DOC -->
+  <section id="docdoc">
+    <h2>Documentation — sapi doc</h2>
+    <p>La commande <code>sapi doc</code> génère un fichier OpenAPI 3.1 à partir de votre fichier <code>.sapi</code>. Avec <code>--html</code>, elle produit également un site interactif Scalar.</p>
+
+    <h3>Commandes</h3>
+    <pre><code><span class="cm"># JSON OpenAPI sur stdout</span>
+sapi doc mon_api.sapi
+
+<span class="cm"># Site HTML complet (works offline, double-clic)</span>
+sapi doc mon_api.sapi --html --output docs</code></pre>
+
+    <h3>Doc-comments</h3>
+    <p>Les commentaires <code>///</code> juste au-dessus d'une route, d'un service ou d'une fonction sont extraits comme <em>summary</em> dans l'OpenAPI :</p>
+    <pre><code><span class="cm">/// Retourne la liste complète des utilisateurs actifs</span>
+<span class="cm">/// Les résultats sont triés alphabétiquement par nom.</span>
+<span class="fn">UserApi</span> <span class="kw">get</span> <span class="str">"/users"</span> {
+    <span class="cm">// ...</span>
+}</code></pre>
+    <p>La première ligne devient le <strong>summary</strong>, les lignes suivantes la <strong>description</strong>.</p>
+
+    <h3>Inférence de schéma</h3>
+    <p>Les schémas de réponse sont déduits automatiquement :</p>
+    <table>
+      <tr><th>Type de retour</th><th>Schéma OpenAPI</th></tr>
+      <tr><td><code>return msg</code> (string)</td><td><code>{"type": "string"}</code></td></tr>
+      <tr><td><code>return rows</code> (SQL .many)</td><td><code>{"type": "array", "items": {...}}</code></td></tr>
+      <tr><td><code>return user</code> (SQL .one)</td><td><code>{"$ref": "#/components/schemas/NomStruct"}</code></td></tr>
+      <tr><td><code>return { int x = … }</code></td><td><code>{"type": "object", "properties": {...}}</code></td></tr>
+    </table>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── EXEMPLE COMPLET -->
+  <section id="example">
+    <h2>Exemple complet minimal</h2>
+    <pre><code><span class="kw">use</span> <span class="str">"std/http"</span>
+
+<span class="kw">database</span> <span class="fn">DB</span> {
+    type: <span class="str">"postgres"</span>
+    host: <span class="fn">env</span>(<span class="str">"DB_HOST"</span>)
+    port: <span class="fn">env</span>(<span class="str">"DB_PORT"</span>)
+    user: <span class="fn">env</span>(<span class="str">"DB_USER"</span>)
+    pass: <span class="fn">env</span>(<span class="str">"DB_PASS"</span>)
+    name: <span class="str">"mydb"</span>
+    pool: <span class="num">5</span>
+}
+
+<span class="kw">service</span> <span class="fn">Api</span> {
+    port:    <span class="num">3000</span>
+    swagger: <span class="kw">true</span>
+    cors:    <span class="kw">true</span>
+    logging: <span class="str">"info"</span>
+}
+
+<span class="kw">fn</span> <span class="fn">slugify</span>(<span class="ty">string</span> text) {
+    <span class="ty">string</span> lower <span class="op">=</span> text<span class="met">:lower</span>
+    <span class="ty">string</span> slug  <span class="op">=</span> lower<span class="met">:replace</span>(<span class="str">" "</span>, <span class="str">"-"</span>)
+    <span class="kw">return</span> slug
+}
+
+<span class="cm">/// Retourne le statut de l'API</span>
+<span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/health"</span> {
+    <span class="ty">string</span> status <span class="op">=</span> <span class="str">"ok"</span>
+    <span class="ty">date</span>   today  <span class="op">=</span> <span class="kw">new date</span>()
+    <span class="kw">return</span> {
+        <span class="ty">string</span> status <span class="op">=</span> status,
+        <span class="ty">string</span> date   <span class="op">=</span> <span class="str">"<span class="interp">{today}</span>"</span>
+    }
+}
+
+<span class="cm">/// Liste tous les articles</span>
+<span class="fn">Api</span> <span class="kw">get</span> <span class="str">"/articles"</span> {
+    <span class="sql">sql</span> getAll <span class="op">=</span> <span class="str">`SELECT id, title, content FROM articles ORDER BY id`</span> : {
+        <span class="ty">int</span>:id, <span class="ty">string</span>:title, <span class="ty">string</span>:content
+    } use DB
+
+    <span class="kw">await</span> <span class="fn">Article</span> rows <span class="op">=</span> getAll().<span class="met">many</span>()
+    <span class="kw">return</span> rows
+}
+
+<span class="cm">/// Crée un article</span>
+<span class="fn">Api</span> <span class="kw">post</span> <span class="str">"/articles"</span> {
+    <span class="ty">string</span> title   <span class="op">=</span> <span class="str">"Mon article"</span>
+    <span class="ty">string</span> slug    <span class="op">=</span> <span class="fn">slugify</span>(title)
+    <span class="ty">string</span> content <span class="op">=</span> <span class="str">"Contenu de l'article."</span>
+
+    <span class="sql">sql</span> insert <span class="op">=</span>
+        <span class="str">`INSERT INTO articles (title, slug, content) VALUES (<span class="interp">{title}</span>, <span class="interp">{slug}</span>, <span class="interp">{content}</span>)`</span>
+
+    <span class="kw">await</span> <span class="fn">InsertResult</span> r <span class="op">=</span> insert({
+        title:   title,
+        slug:    slug,
+        content: content
+    }).<span class="met">run</span>()
+
+    <span class="kw">return</span> <span class="str">"Article '<span class="interp">{title}</span>' créé"</span>
+}</code></pre>
+  </section>
+
+  <p style="color:var(--muted); font-size:12px; margin-top: 48px; text-align:center;">
+    Sapi v2 — Référence du langage — générée le <span id="today"></span>
+  </p>
+  <script>
+    document.getElementById('today').textContent =
+      new Date().toLocaleDateString('fr-FR', { year:'numeric', month:'long', day:'numeric' });
+  </script>
+
+</main>
+</body>
+</html>
