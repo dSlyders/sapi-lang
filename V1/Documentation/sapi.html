@@ -238,8 +238,8 @@
     <p>Le nom de fichier est toujours optionnel — si omis, <code>sapi</code> cherche automatiquement <code>main.sapi</code> dans le dossier courant.</p>
     <table>
       <tr><th>Commande</th><th>Description</th></tr>
-      <tr><td><code>sapi build [fichier.sapi]</code></td><td>Compile en mode release. Produit un binaire standalone dans le dossier courant.</td></tr>
-      <tr><td><code>sapi build [fichier.sapi] --log &lt;dossier&gt;</code></td><td>Idem + enregistre le binaire et un <code>build.log</code> dans le dossier spécifié.</td></tr>
+      <tr><td><code>sapi build [fichier.sapi]</code></td><td>Compile en mode release. Produit <code>sapi_server</code> + <code>build.log</code> dans <code>./dist/</code>.</td></tr>
+      <tr><td><code>sapi build [fichier.sapi] &lt;dossier&gt;</code></td><td>Idem, dans le dossier spécifié. Ex : <code>sapi build ./prod</code></td></tr>
       <tr><td><code>sapi run [fichier.sapi]</code></td><td>Compile et lance le serveur une fois (redémarrage manuel requis après modification).</td></tr>
       <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi]</code></td><td>Génère l'OpenAPI JSON sur stdout.</td></tr>
@@ -256,10 +256,13 @@
     </table>
 
     <h3>Déploiement sur serveur (nginx)</h3>
-    <pre><code><span class="cm"># Sur la machine de développement</span>
-sapi build --log ./dist
+    <pre><code><span class="cm"># Sur la machine de développement — produit dist/ avec le binaire et le log</span>
+sapi build
 <span class="cm"># → dist/sapi_server  (binaire standalone, aucune dépendance)</span>
 <span class="cm"># → dist/build.log    (journal de compilation)</span>
+
+<span class="cm"># Vers un dossier personnalisé</span>
+sapi build api.sapi ./prod
 
 <span class="cm"># Copier le binaire sur le serveur puis lancer</span>
 ./sapi_server</code></pre>
