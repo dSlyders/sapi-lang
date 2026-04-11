@@ -2,6 +2,8 @@
 
 ## Nouveautés
 
+- **`sapi build --linux`** cross-compile un binaire Linux musl x86_64 statique depuis Windows (nécessite `zig`, `cargo-zigbuild` et la target `x86_64-unknown-linux-musl`). Vérifications préalables automatiques avec messages d'erreur clairs si un prérequis manque.
+- **`sapi build --win`** force la compilation Windows (utile sur Linux).
 - **`sapi build`** compile maintenant toujours en mode release et produit un binaire standalone prêt à déployer.
 - **`sapi build --log <dossier>`** copie le binaire et génère un `build.log` dans le dossier spécifié.
 - **Argument fichier optionnel** — `sapi run`, `sapi watch`, `sapi build` et `sapi doc` détectent automatiquement `main.sapi` dans le dossier courant si aucun fichier n'est spécifié.
