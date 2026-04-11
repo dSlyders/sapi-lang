@@ -235,20 +235,42 @@
   <!-- ─────────────────────────────────── CLI -->
   <section id="cli">
     <h2>CLI</h2>
+    <p>Le nom de fichier est toujours optionnel — si omis, <code>sapi</code> cherche automatiquement <code>main.sapi</code> dans le dossier courant.</p>
     <table>
       <tr><th>Commande</th><th>Description</th></tr>
-      <tr><td><code>sapi build &lt;fichier.sapi&gt;</code></td><td>Compile vers un projet Rust dans <code>out/</code></td></tr>
-      <tr><td><code>sapi build &lt;fichier.sapi&gt; -o &lt;dossier&gt;</code></td><td>Spécifie le répertoire de sortie</td></tr>
-      <tr><td><code>sapi run &lt;fichier.sapi&gt;</code></td><td>Compile et lance le serveur</td></tr>
-      <tr><td><code>sapi watch &lt;fichier.sapi&gt;</code></td><td>Recompile à chaque modification</td></tr>
-      <tr><td><code>sapi doc &lt;fichier.sapi&gt;</code></td><td>Génère l'OpenAPI JSON sur stdout</td></tr>
-      <tr><td><code>sapi doc &lt;fichier.sapi&gt; --html -o docs/</code></td><td>Génère un site HTML Scalar interactif</td></tr>
+      <tr><td><code>sapi build [fichier.sapi]</code></td><td>Compile en mode release. Produit un binaire standalone dans le dossier courant.</td></tr>
+      <tr><td><code>sapi build [fichier.sapi] --log &lt;dossier&gt;</code></td><td>Idem + enregistre le binaire et un <code>build.log</code> dans le dossier spécifié.</td></tr>
+      <tr><td><code>sapi run [fichier.sapi]</code></td><td>Compile et lance le serveur une fois (redémarrage manuel requis après modification).</td></tr>
+      <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement.</td></tr>
+      <tr><td><code>sapi doc [fichier.sapi]</code></td><td>Génère l'OpenAPI JSON sur stdout.</td></tr>
+      <tr><td><code>sapi doc [fichier.sapi] --html -o docs/</code></td><td>Génère un site HTML Scalar interactif.</td></tr>
+      <tr><td><code>sapi new &lt;nom&gt;</code></td><td>Crée un nouveau projet Sapi dans un nouveau dossier.</td></tr>
     </table>
-    <pre><code><span class="cm"># Compiler un projet</span>
-sapi build mon_api.sapi
 
-<span class="cm"># Générer la doc HTML (ouvrir docs/index.html)</span>
-sapi doc mon_api.sapi --html --output docs</code></pre>
+    <h3>run vs watch</h3>
+    <table>
+      <tr><th></th><th><code>sapi run</code></th><th><code>sapi watch</code></th></tr>
+      <tr><td>Lance le serveur</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Redémarre après sauvegarde</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Usage typique</td><td>Test ponctuel / CI</td><td>Développement actif</td></tr>
+    </table>
+
+    <h3>Déploiement sur serveur (nginx)</h3>
+    <pre><code><span class="cm"># Sur la machine de développement</span>
+sapi build --log ./dist
+<span class="cm"># → dist/sapi_server  (binaire standalone, aucune dépendance)</span>
+<span class="cm"># → dist/build.log    (journal de compilation)</span>
+
+<span class="cm"># Copier le binaire sur le serveur puis lancer</span>
+./sapi_server</code></pre>
+    <p>Le binaire compilé est <strong>standalone</strong> : ni Sapi ni Rust ne sont nécessaires sur le serveur de production. Nginx fait un <code>proxy_pass</code> vers le port défini dans le service.</p>
+
+    <pre><code><span class="cm"># Exemple de configuration nginx</span>
+location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}</code></pre>
   </section>
 
   <!-- ─────────────────────────────────── COMMENTS -->
