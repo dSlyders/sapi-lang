@@ -179,6 +179,7 @@
     <li><a href="#database">database</a></li>
     <li><a href="#service">service</a></li>
     <li><a href="#routes">Routes HTTP</a></li>
+    <li><a href="#auth">Auth JWT &amp; guard</a></li>
     <li><a href="#fn">Fonctions</a></li>
 
     <li class="section">Types &amp; Variables</li>
@@ -401,6 +402,96 @@ location / {
     <p>Les paramètres de chemin <code>:param</code> sont automatiquement convertis en <code>{param}</code> dans l'OpenAPI généré.</p>
     <div class="callout info">
       <strong>Info</strong> — Chaque route peut lire ses variables locales, appeler des fonctions, exécuter du SQL et retourner une valeur.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── AUTH -->
+  <section id="auth">
+    <h2>Auth JWT &amp; guard</h2>
+    <p>Sapi permet de déclarer un provider JWT via <code>auth</code>, de signer des tokens avec <code>Auth.sign(...)</code> et de protéger des routes avec <code>guard</code>.</p>
+
+    <h3>Déclaration d'un provider auth</h3>
+    <pre><code><span class="kw">auth</span> <span class="fn">Auth</span> {
+    secret:    <span class="fn">env</span>(<span class="str">"JWT_SECRET"</span>)
+    algorithm: <span class="str">"HS256"</span>
+    expiry:    <span class="num">3600</span>
+    claims:    { <span class="ty">int</span> userId, <span class="ty">string</span> role, <span class="ty">string</span> email }
+}</code></pre>
+
+    <table>
+      <tr><th>Champ</th><th>Description</th></tr>
+      <tr><td><code>secret</code></td><td>Clé de signature JWT (souvent via <code>env("JWT_SECRET")</code>)</td></tr>
+      <tr><td><code>algorithm</code></td><td>Algorithme de signature (ex. <code>"HS256"</code>)</td></tr>
+      <tr><td><code>expiry</code></td><td>Durée de validité du token en secondes</td></tr>
+      <tr><td><code>claims</code></td><td>Schéma typé des claims accessibles dans les routes protégées</td></tr>
+    </table>
+
+    <h3>Guard hiérarchique (roles + priorité dynamique)</h3>
+    <pre><code><span class="kw">auth</span> <span class="fn">Auth</span> {
+  secret:    <span class="fn">env</span>(<span class="str">"JWT_SECRET"</span>)
+  algorithm: <span class="str">"HS256"</span>
+  expiry:    <span class="num">3600</span>
+  claims:    { <span class="ty">int</span> userId, <span class="ty">string</span> role, <span class="ty">string</span> email }
+  guard {
+    key: <span class="str">"rank"</span>
+    guard_op: <span class="str">">="</span>
+    roles: [
+      { role: <span class="str">"member"</span>, rank: <span class="num">10</span> },
+      { role: <span class="str">"moderator"</span>, rank: <span class="num">50</span> },
+      { role: <span class="str">"admin"</span>, rank: <span class="num">100</span> },
+      { role: <span class="str">"owner"</span>, rank: <span class="num">999</span>, super: <span class="kw">true</span> }
+    ]
+  }
+}</code></pre>
+
+    <table>
+      <tr><th>Champ guard</th><th>Description</th></tr>
+      <tr><td><code>key</code></td><td>Nom de la clé numérique de priorité dans chaque rôle (<code>rank</code>, <code>weight</code>, <code>priority</code>, ...)</td></tr>
+      <tr><td><code>guard_op</code> / <code>op</code></td><td>Opérateur de comparaison entre rôle utilisateur et rôle requis : <code>&gt;=</code>, <code>&gt;</code>, <code>==</code>, <code>&lt;=</code>, <code>&lt;</code></td></tr>
+      <tr><td><code>roles</code></td><td>Liste des rôles connus avec leur valeur de priorité dynamique</td></tr>
+      <tr><td><code>super: true</code></td><td>Bypass total des checks de rôle (ex. owner/super-admin)</td></tr>
+    </table>
+
+    <h3>Signer un token</h3>
+    <pre><code><span class="fn">AuthApi</span> <span class="kw">post</span> <span class="str">"/login"</span> {
+  body json { <span class="ty">string</span> username, <span class="ty">string</span> role }
+  <span class="ty">string</span> token <span class="op">=</span> <span class="fn">Auth</span>.<span class="fn">sign</span>({
+    <span class="ty">int</span> userId <span class="op">=</span> <span class="num">1</span>,
+    <span class="ty">string</span> role <span class="op">=</span> role,
+    <span class="ty">string</span> email <span class="op">=</span> username
+  })
+  <span class="kw">return</span> { <span class="ty">string</span> token <span class="op">=</span> token }
+}</code></pre>
+
+    <h3>Protéger une route avec guard</h3>
+    <pre><code><span class="cm">// JWT valide requis</span>
+<span class="fn">AuthApi</span> <span class="kw">get</span> <span class="str">"/me"</span> {
+  guard Auth
+  <span class="kw">return</span> {
+    <span class="ty">int</span> id <span class="op">=</span> userId,
+    <span class="ty">string</span> role <span class="op">=</span> role,
+    <span class="ty">string</span> email <span class="op">=</span> email
+  }
+}
+
+<span class="cm">// JWT valide + rôle requis</span>
+<span class="fn">AuthApi</span> <span class="kw">get</span> <span class="str">"/admin"</span> {
+  guard Auth <span class="str">"admin"</span>
+  <span class="kw">return</span> <span class="str">"Zone administrateur"</span>
+}</code></pre>
+
+    <p>Forme courte possible si le provider auth est unique (ou non ambigu) :</p>
+    <pre><code><span class="fn">AuthApi</span> <span class="kw">get</span> <span class="str">"/mod"</span> {
+  guard <span class="str">"moderator"</span>
+  <span class="kw">return</span> <span class="str">"Zone modérateur"</span>
+}</code></pre>
+
+    <div class="callout info">
+      <strong>Info</strong> — Dans une route avec <code>guard Auth</code>, les claims déclarés dans <code>auth Auth { claims: ... }</code> sont injectés comme variables locales (ex. <code>userId</code>, <code>role</code>, <code>email</code>).
+    </div>
+
+    <div class="callout">
+      <strong>Comportement</strong> — Sans token ou avec token invalide, la route protégée renvoie <code>401</code>. Avec un rôle requis, un token valide mais insuffisant est refusé en <code>403</code>. Si <code>auth.guard</code> est défini, la comparaison suit <code>guard_op</code> et la priorité portée par <code>key</code>.
     </div>
   </section>
 

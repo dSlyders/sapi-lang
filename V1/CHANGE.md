@@ -12,6 +12,11 @@
 - **Processus visible** — `sapi run` et `sapi watch` lancent maintenant directement `sapi_server.exe` (plus `cargo`), visible tel quel dans le gestionnaire des tâches.
 - **if / else / else if** — branches conditionnelles avec opérateurs `==`, `!=`, `>`, `<`, `>=`, `<=`.
 - **Erreurs SQL en JSON** — les erreurs de requête retournent `{"error":"sql_error","message":"..."}` avec `eprintln` côté serveur.
+- **Guard hiérarchique dans `auth`** — support d'un bloc `guard { key, guard_op/op, roles }` directement dans la configuration Auth JWT.
+- **Priorités dynamiques de rôles** — la clé de ranking est configurable (`rank`, `weight`, `priority`, ...), avec comparaison via `guard_op` (`>=`, `>`, `==`, `<=`, `<`).
+- **Super-rôle** — support de `super: true` pour bypass des checks de niveau.
+- **Syntaxe courte de route** — support de `guard "role"` en plus de `guard Auth "role"`.
+- **Nouveaux tests guard multi-rôles** — scénario dédié validant hiérarchie, super-rôle, syntaxe courte et compatibilité des contrôles 401/403.
 
 ## Corrections
 
