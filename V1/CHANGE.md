@@ -20,6 +20,9 @@
 
 ## Corrections
 
+- **Version CLI alignée en SemVer** — `sapi -V` affiche désormais `1.0.0` (baseline officielle).
+- **Plus de version hardcodée `0.1.0`** — la version OpenAPI (`info.version`) et la version du `Cargo.toml` généré (`sapi_server`) suivent maintenant automatiquement `env!("CARGO_PKG_VERSION")`.
+- **Politique de bump clarifiée** — les updates standards passent en patch (`1.0.1`, `1.0.2`, ...).
 - `sapi watch` ne créait pas de dossier `.sapi_watch/` visible à côté du fichier source.
 - Les variables non réassignées ne sont plus déclarées `let mut` dans le code généré.
 - Les structs multi-retour avec champs camelCase ne génèrent plus d'avertissement Rust.
