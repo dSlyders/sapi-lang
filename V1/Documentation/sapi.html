@@ -179,6 +179,7 @@
     <li><a href="#database">database</a></li>
     <li><a href="#service">service</a></li>
     <li><a href="#routes">Routes HTTP</a></li>
+    <li><a href="#body">Body &amp; validation</a></li>
     <li><a href="#auth">Auth JWT &amp; guard</a></li>
     <li><a href="#fn">Fonctions</a></li>
 
@@ -210,6 +211,7 @@
     <li><a href="#sqlcall">Appels SQL</a></li>
 
     <li class="section">Documentation</li>
+    <li><a href="#errors">Erreurs runtime</a></li>
     <li><a href="#docdoc">sapi doc</a></li>
   </ul>
 </nav>
@@ -395,13 +397,64 @@ location / {
 }
 
 <span class="fn">UserApi</span> <span class="kw">post</span>   <span class="str">"/users"</span>        { <span class="cm">/* ... */</span> }
-<span class="fn">UserApi</span> <span class="kw">put</span>    <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }
-<span class="fn">UserApi</span> <span class="kw">patch</span>  <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }
-<span class="fn">UserApi</span> <span class="kw">delete</span> <span class="str">"/users/:id"</span>    { <span class="cm">/* ... */</span> }</code></pre>
+<span class="fn">UserApi</span> <span class="kw">put</span>    <span class="str">"/users/{id}"</span>    { <span class="cm">/* ... */</span> }
+<span class="fn">UserApi</span> <span class="kw">patch</span>  <span class="str">"/users/{id}"</span>    { <span class="cm">/* ... */</span> }
+<span class="fn">UserApi</span> <span class="kw">delete</span> <span class="str">"/users/{id}"</span>    { <span class="cm">/* ... */</span> }</code></pre>
 
     <p>Les paramètres de chemin <code>:param</code> sont automatiquement convertis en <code>{param}</code> dans l'OpenAPI généré.</p>
     <div class="callout info">
       <strong>Info</strong> — Chaque route peut lire ses variables locales, appeler des fonctions, exécuter du SQL et retourner une valeur.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── BODY / VALIDATION -->
+  <section id="body">
+    <h2>Body &amp; validation</h2>
+    <p>La syntaxe body actuelle est <strong>clean-only</strong> avec des blocs <code>field</code>. Les formes legacy en ligne ne sont plus recommandées.</p>
+
+    <h3>Body JSON</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">post</span> <span class="str">"/users"</span> {
+  body json {
+    field string name {
+      required.onError(<span class="str">"name requis"</span>)
+      min(<span class="num">2</span>).onError(<span class="str">"name trop court"</span>)
+    }
+    field string email {
+      required.onError(<span class="str">"email requis"</span>)
+      email.onError(<span class="str">"email invalide"</span>)
+    }
+    field int? age {
+      min(<span class="num">18</span>).onError(<span class="str">"age min 18"</span>)
+    }
+    field object address {
+      field string city { required.onError(<span class="str">"ville requise"</span>) }
+      field string zip {}
+    }
+  }
+
+  <span class="kw">return</span> <span class="num">201</span>: { <span class="ty">string</span> status <span class="op">=</span> <span class="str">"created"</span> }
+}</code></pre>
+
+    <h3>Body Form</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">post</span> <span class="str">"/contact"</span> {
+  body form {
+    field string name {}
+    field string message {}
+  }
+  <span class="kw">return</span> <span class="str">"ok"</span>
+}</code></pre>
+
+    <h3>Body Form Multipart</h3>
+    <pre><code><span class="fn">Api</span> <span class="kw">post</span> <span class="str">"/upload"</span> {
+  body form multipart {
+    field string title {}
+    field string fileName {}
+  }
+  <span class="kw">return</span> <span class="str">"uploaded"</span>
+}</code></pre>
+
+    <div class="callout info">
+      <strong>Règles</strong> — Les objets imbriqués sont supportés en <code>body json</code>. Ils ne sont pas supportés en <code>body form</code> ni en <code>body form multipart</code>.
     </div>
   </section>
 
@@ -454,7 +507,10 @@ location / {
 
     <h3>Signer un token</h3>
     <pre><code><span class="fn">AuthApi</span> <span class="kw">post</span> <span class="str">"/login"</span> {
-  body json { <span class="ty">string</span> username, <span class="ty">string</span> role }
+  body json {
+    field string username {}
+    field string role {}
+  }
   <span class="ty">string</span> token <span class="op">=</span> <span class="fn">Auth</span>.<span class="fn">sign</span>({
     <span class="ty">int</span> userId <span class="op">=</span> <span class="num">1</span>,
     <span class="ty">string</span> role <span class="op">=</span> role,
@@ -492,6 +548,10 @@ location / {
 
     <div class="callout">
       <strong>Comportement</strong> — Sans token ou avec token invalide, la route protégée renvoie <code>401</code>. Avec un rôle requis, un token valide mais insuffisant est refusé en <code>403</code>. Si <code>auth.guard</code> est défini, la comparaison suit <code>guard_op</code> et la priorité portée par <code>key</code>.
+    </div>
+
+    <div class="callout info">
+      <strong>Codes d'erreur</strong> — Les routes auth/guard utilisent les codes runtime unifiés <code>auth_missing_header</code>, <code>auth_invalid_token</code> et <code>guard_forbidden</code>.
     </div>
   </section>
 
@@ -1002,6 +1062,37 @@ pub struct GetUsers {
     pub name:  String,
     pub email: String,
 }</code></pre>
+  </section>
+
+  <hr>
+
+  <!-- ─────────────────────────────────── RUNTIME ERRORS -->
+  <section id="errors">
+    <h2>Erreurs runtime</h2>
+    <p>Les erreurs runtime suivent un envelope JSON unifié :</p>
+    <pre><code>{
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"validation_error"</span>,
+    <span class="str">"message"</span>: <span class="str">"Validation failed"</span>,
+    <span class="str">"traceId"</span>: <span class="str">"1776434936065531"</span>,
+    <span class="str">"details"</span>: {
+      <span class="str">"rules"</span>: [
+        { <span class="str">"field"</span>: <span class="str">"email"</span>, <span class="str">"rule"</span>: <span class="str">"required"</span>, <span class="str">"message"</span>: <span class="str">"email requis"</span> }
+      ]
+    }
+  }
+}</code></pre>
+
+    <table>
+      <tr><th>HTTP</th><th>Code</th><th>Cas</th></tr>
+      <tr><td><code>400</code></td><td><code>multipart_invalid_payload</code>, <code>multipart_missing_field</code>, ...</td><td>Lecture/conversion multipart invalide</td></tr>
+      <tr><td><code>401</code></td><td><code>auth_missing_header</code>, <code>auth_invalid_token</code></td><td>Auth manquante/invalide</td></tr>
+      <tr><td><code>403</code></td><td><code>guard_forbidden</code></td><td>Rôle insuffisant</td></tr>
+      <tr><td><code>404</code></td><td><code>not_found</code></td><td>Route absente</td></tr>
+      <tr><td><code>408</code></td><td><code>request_timeout</code></td><td>Timeout de requête</td></tr>
+      <tr><td><code>422</code></td><td><code>validation_error</code></td><td>Règles de validation body</td></tr>
+      <tr><td><code>500</code></td><td><code>sql_error</code></td><td>Erreur SQL runtime</td></tr>
+    </table>
   </section>
 
   <hr>
