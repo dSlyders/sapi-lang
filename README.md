@@ -15,6 +15,7 @@
 - [Authentification JWT](#authentification-jwt)
 - [Extension VS Code](#extension-vs-code)
 - [Compiler et lancer](#compiler-et-lancer)
+- [Documentation et GitHub Pages](#documentation-et-github-pages)
 - [Structure du dépôt](#structure-du-dépôt)
 
 ---
@@ -287,6 +288,41 @@ sapi doc main.sapi --html
 
 # Générer la documentation dans un dossier spécifique
 sapi doc main.sapi --html --output api-docs
+```
+
+---
+
+## Documentation et GitHub Pages
+
+Source de référence de la documentation langage:
+
+- `C:\SAPI\LANGUAGE.html`
+
+Publication dans ce dépôt:
+
+- `V[n]/Documentation/sapi.html` pour la release active
+- `docs/index.html` pour GitHub Pages
+
+URL GitHub Pages attendue:
+
+- https://dslyders.github.io/sapi-lang/
+
+Workflow automatique:
+
+- `.github/workflows/deploy-docs-pages.yml`
+- Déclenché à chaque push sur `main` qui modifie `docs/**`
+
+Mise à jour manuelle rapide (Windows PowerShell):
+
+```powershell
+$distRoot = "C:\SAPI\Distribution"
+$latestV  = Get-ChildItem $distRoot -Directory -Filter "V*" |
+            Where-Object { $_.Name -match '^V(\d+)$' } |
+            Sort-Object { [int]($_.Name -replace 'V','') } |
+            Select-Object -Last 1
+
+Copy-Item -Force "C:\SAPI\LANGUAGE.html" "$($latestV.FullName)\Documentation\sapi.html"
+Copy-Item -Force "C:\SAPI\LANGUAGE.html" "C:\SAPI\Distribution\docs\index.html"
 ```
 
 ---
