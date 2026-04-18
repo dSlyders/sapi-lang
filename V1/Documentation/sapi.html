@@ -180,6 +180,7 @@
     <li><a href="#service">service</a></li>
     <li><a href="#routes">Routes HTTP</a></li>
     <li><a href="#body">Body &amp; validation</a></li>
+    <li><a href="#request-meta">Headers &amp; cookies</a></li>
     <li><a href="#auth">Auth JWT &amp; guard</a></li>
     <li><a href="#fn">Fonctions</a></li>
 
@@ -245,8 +246,8 @@
       <tr><td><code>sapi build [fichier.sapi] &lt;dossier&gt;</code></td><td>Idem, dans le dossier spécifié. Ex : <code>sapi build ./prod</code></td></tr>
       <tr><td><code>sapi build --linux</code></td><td>Cross-compile un binaire Linux musl x86_64 (statique) depuis Windows.</td></tr>
       <tr><td><code>sapi build --win</code></td><td>Force la compilation pour Windows (utile sur Linux).</td></tr>
-      <tr><td><code>sapi run [fichier.sapi]</code></td><td>Compile et lance le serveur une fois (redémarrage manuel requis après modification).</td></tr>
-      <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement.</td></tr>
+      <tr><td><code>sapi run [fichier.sapi]</code></td><td>Compile et lance le serveur une fois (redémarrage manuel requis après modification). Artefacts locaux dans <code>.sapi/run/out</code>.</td></tr>
+      <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement. Artefacts locaux dans <code>.sapi/watch/out</code>.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi]</code></td><td>Génère l'OpenAPI JSON sur stdout.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi] --html -o docs/</code></td><td>Génère un site HTML Scalar interactif.</td></tr>
       <tr><td><code>sapi new &lt;nom&gt;</code></td><td>Crée un nouveau projet Sapi dans un nouveau dossier.</td></tr>
@@ -259,6 +260,19 @@
       <tr><td>Redémarre après sauvegarde</td><td>✗</td><td>✓</td></tr>
       <tr><td>Usage typique</td><td>Test ponctuel / CI</td><td>Développement actif</td></tr>
     </table>
+    <p>Les dossiers de travail locaux sont regroupés sous <code>.sapi/</code> à la racine du projet : <code>.sapi/build/tmp</code>, <code>.sapi/run/out</code> et <code>.sapi/watch/out</code>.</p>
+
+    <h3>Configuration runtime (<code>sapi.conf</code>)</h3>
+    <p>Le runtime généré lit automatiquement un fichier <code>sapi.conf</code> (ou le chemin défini par la variable d'environnement <code>SAPI_CONF</code>).</p>
+    <pre><code>log.level=error
+  log.to_stderr=true
+  log.to_file=true
+  log.error_path=logs/sapi-error.log
+  log.critical_path=logs/sapi-critical.log
+  log.rotate.max_bytes=10485760
+  log.rotate.max_files=3
+  panic.include_backtrace=false</code></pre>
+    <p><code>log.level</code> accepte <code>critical</code>, <code>error</code>, <code>warn</code>, <code>info</code>, <code>debug</code> (seuil minimum à conserver).</p>
 
     <h3>Déploiement sur serveur (nginx)</h3>
     <pre><code><span class="cm"># Sur la machine de développement — produit dist/ avec le binaire et le log</span>
@@ -330,6 +344,11 @@ location / {
     pass: <span class="fn">env</span>(<span class="str">"DB_PASS"</span>)
     name: <span class="str">"ma_base"</span>
     pool: <span class="num">10</span>               <span class="cm">// taille du pool de connexions</span>
+    log {
+      path: <span class="str">"logs/sql-main.log"</span>
+      level: <span class="str">"info"</span>
+      slow: <span class="num">250</span>           <span class="cm">// ms: seuil slow query</span>
+    }
 }
 
 <span class="kw">database</span> <span class="fn">LogDB</span> {
@@ -351,6 +370,7 @@ location / {
       <tr><td><code>pass</code></td><td>littéral ou <code>env("VAR")</code></td><td>Mot de passe</td></tr>
       <tr><td><code>name</code></td><td>littéral ou <code>env("VAR")</code></td><td>Nom de la base</td></tr>
       <tr><td><code>pool</code></td><td>entier</td><td>Connexions simultanées max</td></tr>
+      <tr><td><code>log { path, level, slow }</code></td><td>bloc optionnel</td><td>Active les logs SQL (requête, durée, slow query). <code>slow</code> est en millisecondes.</td></tr>
     </table>
   </section>
 
@@ -363,6 +383,10 @@ location / {
     swagger: <span class="kw">true</span>          <span class="cm">// active /swagger-ui</span>
     cors:    <span class="kw">true</span>          <span class="cm">// CORS ouvert (toutes origines)</span>
     logging: <span class="str">"info"</span>
+        log {
+          path:  <span class="str">"logs/userapi-access.log"</span>
+          level: <span class="str">"info"</span>
+        }
 }
 
 <span class="kw">service</span> <span class="fn">AdminApi</span> {
@@ -382,7 +406,9 @@ location / {
       <tr><td><code>limit</code></td><td>entier</td><td>Limite de concurrence (rate limiting)</td></tr>
       <tr><td><code>timeout</code></td><td>entier (secondes)</td><td>Timeout de requête</td></tr>
       <tr><td><code>logging</code></td><td><code>"info"</code> <code>"debug"</code> <code>"warn"</code> <code>"error"</code></td><td>Niveau de log tracing</td></tr>
+        <tr><td><code>log { path, level }</code></td><td>bloc optionnel</td><td>Active les logs d'accès HTTP (route, IP, user-agent, status, durée). Sans ce bloc, aucun access log n'est émis.</td></tr>
     </table>
+      <p>Le bloc <code>log</code> utilise la même politique de rotation que <code>sapi.conf</code> (<code>log.rotate.max_bytes</code> et <code>log.rotate.max_files</code>).</p>
   </section>
 
   <!-- ─────────────────────────────────── ROUTES -->
@@ -455,6 +481,40 @@ location / {
 
     <div class="callout info">
       <strong>Règles</strong> — Les objets imbriqués sont supportés en <code>body json</code>. Ils ne sont pas supportés en <code>body form</code> ni en <code>body form multipart</code>.
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────── REQUEST META -->
+  <section id="request-meta">
+    <h2>Headers &amp; cookies</h2>
+    <p>Dans une route, tu peux lire des headers et cookies HTTP avec des déclarations explicites. Les deux formes existent en obligatoire et optionnelle.</p>
+
+    <h3>Syntaxe</h3>
+    <pre><code><span class="cm">// Header obligatoire (400 si absent ou invalide)</span>
+header <span class="ty">string</span> authHeader = <span class="str">"Authorization"</span>
+
+<span class="cm">// Header optionnel (string vide si absent)</span>
+header <span class="ty">string?</span> lang = <span class="str">"Accept-Language"</span>
+
+<span class="cm">// Cookie obligatoire (400 si absent)</span>
+cookie <span class="ty">string</span> sessionId = <span class="str">"session_id"</span>
+
+<span class="cm">// Cookie optionnel (string vide si absent)</span>
+cookie <span class="ty">string?</span> theme = <span class="str">"theme"</span></code></pre>
+
+    <h3>Exemple complet</h3>
+    <pre><code><span class="fn">MonApi</span> <span class="kw">get</span> <span class="str">"/profile"</span> {
+  header <span class="ty">string</span> auth = <span class="str">"Authorization"</span>
+  cookie <span class="ty">string?</span> sessionId = <span class="str">"session_id"</span>
+
+  <span class="kw">return</span> {
+    <span class="ty">string</span> token = auth,
+    <span class="ty">string</span> sid = sessionId
+  }
+}</code></pre>
+
+    <div class="callout info">
+      <strong>Comportement</strong> — Les déclarations <code>string</code> (sans <code>?</code>) retournent une erreur <code>400</code> structurée si la valeur est absente. Les déclarations <code>string?</code> produisent une chaîne vide si la donnée n'existe pas.
     </div>
   </section>
 

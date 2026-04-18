@@ -12,7 +12,10 @@
     { "include": "#fn-decl" },
     { "include": "#await-sql-decl" },
     { "include": "#decl-with-name" },
+    { "include": "#request-meta-decl" },
+    { "include": "#field-decl" },
     { "include": "#var-decl" },
+    { "include": "#json-kv-unified" },
     { "include": "#config-key" },
     { "include": "#keywords" },
     { "include": "#types" },
@@ -153,18 +156,58 @@
       }
     },
     "decl-with-name": {
-      "match": "\\b(service|database|auth|sql|guard|body)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+      "match": "\\b(service|database|auth|sql|guard|body|log)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
       "captures": {
         "1": { "name": "keyword.declaration.sapi" },
         "2": { "name": "entity.name.sapi" }
       }
     },
+    "request-meta-decl": {
+      "comment": "header/cookie typed variable declaration in routes",
+      "match": "\\b(header|cookie)\\s+(list:[a-zA-Z]+\\??|string\\??|int\\??|float\\??|bool\\??|date\\??|time\\??|json\\??|number\\??|uuid\\??|object\\??)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*=",
+      "captures": {
+        "1": { "name": "keyword.declaration.request-meta.sapi" },
+        "2": { "name": "storage.type.sapi" },
+        "3": { "name": "variable.other.sapi" }
+      }
+    },
+    "field-decl": {
+      "comment": "body field declarations",
+      "match": "\\b(field)\\s+(list:[a-zA-Z]+\\??|string\\??|int\\??|float\\??|bool\\??|date\\??|time\\??|json\\??|number\\??|uuid\\??|object\\??)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.declaration.field.sapi" },
+        "2": { "name": "storage.type.sapi" },
+        "3": { "name": "variable.other.sapi" }
+      }
+    },
     "var-decl": {
-      "match": "\\b(string|int|float|bool|date|time|json|number|list:[a-zA-Z]+)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+      "match": "\\b(list:[a-zA-Z]+\\??|string\\??|int\\??|float\\??|bool\\??|date\\??|time\\??|json\\??|number\\??|uuid\\??|object\\??)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b",
       "captures": {
         "1": { "name": "storage.type.sapi" },
         "2": { "name": "variable.other.sapi" }
       }
+    },
+    "json-kv-unified": {
+      "patterns": [
+        {
+          "comment": "quoted key in JSON object: \"key\":",
+          "match": "(\")(\\w[\\w\\-]*)(\")\\s*(:)",
+          "captures": {
+            "1": { "name": "punctuation.definition.string.begin.sapi" },
+            "2": { "name": "entity.other.attribute-name.sapi" },
+            "3": { "name": "punctuation.definition.string.end.sapi" },
+            "4": { "name": "punctuation.separator.key-value.sapi" }
+          }
+        },
+        {
+          "comment": "bare key with : or = to keep visual consistency in object/array payloads",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b\\s*(:|=)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.sapi" },
+            "2": { "name": "punctuation.separator.key-value.sapi" }
+          }
+        }
+      ]
     },
     "config-key": {
       "comment": "indented key: value inside database/service/auth blocks",
@@ -177,11 +220,11 @@
       "patterns": [
         {
           "name": "keyword.control.sapi",
-          "match": "\\b(if|else|return|await|for)\\b"
+          "match": "\\b(if|else|return|await|for|required)\\b"
         },
         {
           "name": "keyword.declaration.sapi",
-          "match": "\\b(service|database|fn|async|lock|sql|use|route|new|guard|body|auth)\\b"
+          "match": "\\b(service|database|fn|async|lock|sql|use|route|new|guard|body|auth|header|cookie|field|claims|log)\\b"
         }
       ]
     },
@@ -189,11 +232,11 @@
       "patterns": [
         {
           "name": "storage.type.sapi",
-          "match": "\\blist:[a-zA-Z]+"
+          "match": "\\blist:[a-zA-Z]+\\??"
         },
         {
           "name": "storage.type.sapi",
-          "match": "\\b(string|int|float|bool|date|time|json|number)\\b"
+          "match": "\\b(string|int|float|bool|date|time|json|number|uuid|object)\\??\\b"
         }
       ]
     },
@@ -223,7 +266,7 @@
     },
     "brackets": {
       "name": "punctuation.bracket.sapi",
-      "match": "[{}]"
+      "match": "[{}\\[\\]]"
     }
   }
 }

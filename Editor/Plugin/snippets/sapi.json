@@ -1,1 +1,70 @@
-{}
+{
+	"service block": {
+		"scope": "sapi",
+		"prefix": "service",
+		"body": [
+			"service ${1:MyApi} {",
+			"\tport: ${2:3000}",
+			"\tswagger: ${3:true}",
+			"\tcors: ${4:true}",
+			"\tlogging: \"${5:info}\"",
+			"}"
+		],
+		"description": "Declare a service block"
+	},
+	"route GET": {
+		"scope": "sapi",
+		"prefix": "get",
+		"body": [
+			"${1:Api} get \"/${2:path}\" {",
+			"\t$0",
+			"}"
+		],
+		"description": "HTTP GET route"
+	},
+	"body json": {
+		"scope": "sapi",
+		"prefix": "body",
+		"body": [
+			"body json {",
+			"\tfield ${1:string} ${2:name} { required.onError(\"${3:${2} required}\") }",
+			"}"
+		],
+		"description": "Declare JSON body fields"
+	},
+	"header required": {
+		"scope": "sapi",
+		"prefix": "header",
+		"body": [
+			"header ${1:string} ${2:auth} = \"${3:Authorization}\""
+		],
+		"description": "Read a required header"
+	},
+	"cookie required": {
+		"scope": "sapi",
+		"prefix": "cookie",
+		"body": [
+			"cookie ${1:string} ${2:sid} = \"${3:session_id}\""
+		],
+		"description": "Read a required cookie"
+	},
+	"uuid variable": {
+		"scope": "sapi",
+		"prefix": "uuid",
+		"body": [
+			"uuid ${1:id} = \"${2:00000000-0000-0000-0000-000000000000}\""
+		],
+		"description": "uuid variable declaration"
+	},
+	"service/database log block": {
+		"scope": "sapi",
+		"prefix": "log",
+		"body": [
+			"log {",
+			"\tpath: \"${1:logs/access.log}\"",
+			"\tlevel: \"${2:info}\"",
+			"}"
+		],
+		"description": "Declare a log block"
+	}
+}

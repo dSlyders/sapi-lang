@@ -3,7 +3,12 @@
         "textMateRules": [
             {
                 "comment": "Keywords: service, database, auth, guard, body, fn, sql, etc.",
-                "scope": ["keyword.declaration.sapi", "keyword.control.sapi"],
+                "scope": [
+                    "keyword.declaration.sapi",
+                    "keyword.control.sapi",
+                    "keyword.declaration.request-meta.sapi",
+                    "keyword.declaration.field.sapi"
+                ],
                 "settings": { "foreground": "#C586C0" }
             },
             {
@@ -20,6 +25,16 @@
                 "comment": "Curly braces { }",
                 "scope": ["punctuation.bracket.sapi"],
                 "settings": { "foreground": "#ABB2BF" }
+            },
+            {
+                "comment": "Unified key names in key:value and key=value forms",
+                "scope": ["entity.other.attribute-name.sapi"],
+                "settings": { "foreground": "#56B6C2" }
+            },
+            {
+                "comment": "Unified separator for key:value and key=value",
+                "scope": ["punctuation.separator.key-value.sapi"],
+                "settings": { "foreground": "#9FA8B5" }
             },
             {
                 "comment": "Config block keys: type: / host: / port: / secret: etc.",
