@@ -2,6 +2,8 @@
 
 > **Sapi** (Slyders API) est un langage de haut niveau conçu par **dSlyders** pour créer des APIs REST modernes en écrivant un minimum de code. Le compilateur génère automatiquement du Rust (Axum + Tokio) à partir de vos fichiers `.sapi`.
 
+Documentation en ligne: https://dslyders.github.io/sapi-lang/
+
 ---
 
 ## Table des matières
