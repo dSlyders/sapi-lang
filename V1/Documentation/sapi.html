@@ -166,7 +166,7 @@
 <nav>
   <div class="logo">
     <h1>⚡ Sapi</h1>
-    <p>Référence du langage v2</p>
+    <p>Référence du langage v1</p>
   </div>
   <ul>
     <li class="section">Démarrage</li>
@@ -688,7 +688,7 @@ cookie <span class="ty">string?</span> theme = <span class="str">"theme"</span><
   <section id="lock">
     <h2>lock — Immutabilité</h2>
     <p>Le mot-clé <code>lock</code> marque une variable comme immuable (<code>let</code> sans <code>mut</code> en Rust). Obligatoire sur les listes et JSON que vous ne voulez pas modifier.</p>
-    <pre><code><span class="kw">lock</span> <span class="ty">string</span>     version  <span class="op">=</span> <span class="str">"1.0.0"</span>
+    <pre><code><span class="kw">lock</span> <span class="ty">string</span>     version  <span class="op">=</span> <span class="str">"1.0.5"</span>
 <span class="kw">lock</span> <span class="ty">list:string</span> tags     <span class="op">=</span> [<span class="str">"rust"</span>, <span class="str">"axum"</span>, <span class="str">"sapi"</span>]
 <span class="kw">lock</span> <span class="ty">json</span>        config   <span class="op">=</span> { <span class="str">"env"</span>: <span class="str">"prod"</span>, <span class="str">"debug"</span>: <span class="kw">false</span> }</code></pre>
 
@@ -1312,7 +1312,7 @@ sapi doc mon_api.sapi --html --output docs</code></pre>
   </section>
 
   <p style="color:var(--muted); font-size:12px; margin-top: 48px; text-align:center;">
-    Sapi v2 — Référence du langage — générée le <span id="today"></span>
+    Sapi v1 — Référence du langage — générée le <span id="today"></span>
   </p>
   <script>
     document.getElementById('today').textContent =

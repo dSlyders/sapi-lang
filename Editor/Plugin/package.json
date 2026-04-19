@@ -2,7 +2,7 @@
   "name": "sapi-lang",
   "displayName": "Sapi Language",
   "description": "Syntax highlighting for .sapi files",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "publisher": "local",
   "engines": { "vscode": "^1.60.0" },
   "categories": ["Programming Languages"],

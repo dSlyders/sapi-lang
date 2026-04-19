@@ -1,5 +1,11 @@
 ﻿# Sapi V1 — Changelog
 
+## 1.0.5
+
+- Maintien de la release publique sur `V1` (suppression de `V2` du dépôt Distribution).
+- Bump version CLI vers `1.0.5` (source compilateur et artefacts associés).
+- Alignement des fichiers de version côté éditeur/plugin sur `1.0.5`.
+
 ## Nouveautés
 
 - **`sapi build --linux`** cross-compile un binaire Linux musl x86_64 statique depuis Windows (nécessite `zig`, `cargo-zigbuild` et la target `x86_64-unknown-linux-musl`). Vérifications préalables automatiques avec messages d'erreur clairs si un prérequis manque.
