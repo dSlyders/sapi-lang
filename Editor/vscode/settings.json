@@ -3,33 +3,59 @@
         "textMateRules": [
             {
                 "comment": "Keywords: service, database, auth, guard, body, fn, sql, etc.",
-                "scope": ["keyword.declaration.sapi", "keyword.control.sapi"],
-                "settings": { "foreground": "#C586C0" }
+                "scope": [
+                    "keyword.declaration.sapi",
+                    "keyword.declaration.request-meta.sapi",
+                    "keyword.control.sapi"
+                ],
+                "settings": { "foreground": "#5e7b99", "fontStyle": "bold", "fontSize": 1.1 }
+            },
+            {
+                "scope": ["keyword.declaration.field.sapi"],
+                "settings": { "foreground": "#5b7a9b", "fontStyle": "bold", "fontSize": 1.1 }
+            },
+            {
+                "comment": "Operators in conditions and expressions",
+                "scope": ["keyword.operator.sapi"],
+                "settings": { "foreground": "#1cff07" }
             },
             {
                 "comment": "Names after declaration keywords (service name, fn name, sql name, etc.)",
                 "scope": ["entity.name.sapi"],
-                "settings": { "foreground": "#9CDCFE" }
+                "settings": { "foreground": "#bb86c8" }
             },
             {
                 "comment": "Variable names (after a type annotation)",
-                "scope": ["variable.other.sapi"],
-                "settings": { "foreground": "#9CDCFE" }
+                "scope": ["variable.other.sapi"], 
+                "settings": { "foreground": "#cbedc3" }
             },
             {
-                "comment": "Curly braces { }",
-                "scope": ["punctuation.bracket.sapi"],
-                "settings": { "foreground": "#ABB2BF" }
+                "comment": "Variables used in if/else if/for conditions",
+                "scope": ["variable.other.control-flow.sapi"],
+                "settings": { "foreground": "#b3d9e6" }
+            },
+            {
+                "comment": "Declared variable names (lhs in declarations)",
+                "scope": ["variable.other.declaration.sapi"],
+                "settings": { "foreground": "#8eb984", "fontSize": 1.05 }
             },
             {
                 "comment": "Config block keys: type: / host: / port: / secret: etc.",
                 "scope": ["entity.other.attribute-name.sapi"],
-                "settings": { "foreground": "#56B6C2" }
+                "settings": { "foreground": "#72A9A9" }
+            },
+            {
+                "comment": "Key/value separators : and =",
+                "scope": ["punctuation.separator.key-value.sapi"],
+                "settings": { "foreground": "#ffffff" }
             },
             {
                 "comment": "Type names: string, int, float, bool, list:T etc.",
-                "scope": ["storage.type.sapi"],
-                "settings": { "foreground": "#4EC9B0" }
+                "scope": [
+                    "storage.type.sapi"
+                    
+                ],
+                "settings": { "foreground": "#5fa484", "fontStyle": "italic bold", "fontSize": 0.9}
             },
             {
                 "comment": "String interpolation brackets {var} in strings",
@@ -37,72 +63,126 @@
                     "punctuation.definition.interpolation.begin.sapi",
                     "punctuation.definition.interpolation.end.sapi"
                 ],
-                "settings": { "foreground": "#808080" }
+                "settings": { "foreground": "#a08256", "fontStyle": "bold", "fontSize": 1.05 }
             },
             {
                 "comment": "Variable name inside string interpolation {varname}",
                 "scope": ["variable.template-expression.sapi"],
-                "settings": { "foreground": "#D4D4D4" }
+                "settings": { "foreground": "#e0cc99" }
             },
             {
-                "comment": "Regular double-quoted strings",
-                "scope": ["string.quoted.double.sapi", "string.quoted.route.sapi"],
-                "settings": { "foreground": "#CE9178" }
+                "comment": "Regular double-quoted strings content",
+                "scope": ["string.quoted.double.sapi", "string.quoted.route.sapi", "string.quoted.single.sql.sapi"],
+                "settings": { "foreground": "#7fad8e" }
+            },
+            {
+                "comment": "String delimiters for double quotes",
+                "scope": [
+                    "punctuation.definition.string.begin.sapi",
+                    "punctuation.definition.string.end.sapi"
+                ],
+                "settings": { "foreground": "#b3cbd2", "fontStyle": "bold" }
             },
             {
                 "comment": "SQL backtick delimiters",
                 "scope": ["punctuation.definition.string.backtick.sapi"],
-                "settings": { "foreground": "#E06C75", "fontStyle": "bold" }
+                "settings": { "foreground": "#b3cbd2", "fontStyle": "bold" }
             },
             {
                 "comment": "SQL backtick strings — base text",
                 "scope": ["string.quoted.backtick.sql.sapi"],
-                "settings": { "foreground": "#A8B8C8" }
+                "settings": { "foreground": "#B8C1CC" }
             },
             {
                 "comment": "SQL keywords inside backtick strings",
                 "scope": ["keyword.other.sql.sapi"],
-                "settings": { "foreground": "#4FC1FF", "fontStyle": "" }
+                "settings": { "foreground": "#ce9772", "fontStyle": "" }
+            },
+            {
+                "comment": "SQL operators inside backtick strings",
+                "scope": ["keyword.operator.sql.sapi"],
+                "settings": { "foreground": "#A5AFBA" }
+            },
+            {
+                "comment": "SQL function calls (COALESCE, COUNT, SUM, etc.)",
+                "scope": ["entity.name.function.sql.sapi"],
+                "settings": { "foreground": "#D6B06B", "fontStyle": "" }
+            },
+            {
+                "comment": "SQL table aliases before dot (u., p., oa., t.)",
+                "scope": ["variable.other.sql-alias.sapi"],
+                "settings": { "foreground": "#cfa55d" }
+            },
+            {
+                "comment": "SQL accessor dot in alias.column",
+                "scope": ["punctuation.accessor.sql.sapi"],
+                "settings": { "foreground": "#6E7681" }
+            },
+            {
+                "comment": "SQL interpolation braces for external placeholders",
+                "scope": [
+                    "punctuation.definition.interpolation.begin.sql.sapi",
+                    "punctuation.definition.interpolation.end.sql.sapi"
+                ],
+                "settings": { "foreground": "#d6c330", "fontStyle": "bold" }
+            },
+            {
+                "comment": "SQL interpolation placeholder content",
+                "scope": ["variable.template-expression.sql.sapi"],
+                "settings": { "foreground": "#eed688" }
+            },
+            {
+                "comment": "SQL single-quote delimiters",
+                "scope": [
+                    "punctuation.definition.string.begin.sql.sapi",
+                    "punctuation.definition.string.end.sql.sapi"
+                ],
+                "settings": { "foreground": "#5D7B4F", "fontStyle": "bold" }
             },
             {
                 "comment": ".one() .many() .run() executors",
                 "scope": ["support.function.execute.sapi"],
-                "settings": { "foreground": "#DCDCAA" }
+                "settings": { "foreground": "#a0b6d6" }
             },
             {
                 "comment": ":method chained calls",
                 "scope": ["entity.name.function.method.sapi"],
-                "settings": { "foreground": "#DCDCAA" }
+                "settings": { "foreground": "#869cbb" }
+            },
+            {
+                "comment": "Accessor punctuation for :method",
+                "scope": ["punctuation.accessor.sapi"],
+                "settings": { "foreground": "#1aff00" }
             },
             {
                 "comment": "Function calls",
                 "scope": ["entity.name.function.sapi"],
-                "settings": { "foreground": "#DCDCAA" }
+                "settings": { "foreground": "#869cbb" }
             },
             {
                 "comment": "Boolean true/false",
                 "scope": ["constant.language.boolean.sapi"],
-                "settings": { "foreground": "#569CD6" }
+                "settings": { "foreground": "#83d496" }
             },
             {
                 "comment": "Numbers",
                 "scope": ["constant.numeric.sapi", "constant.numeric.http-status.sapi"],
-                "settings": { "foreground": "#B5CEA8" }
+                "settings": { "foreground": "#83d496" }
             },
             {
                 "comment": "Comments",
                 "scope": ["comment.line.double-slash.sapi"],
-                "settings": { "foreground": "#6A9955", "fontStyle": "italic" }
+                "settings": { "foreground": "#6E7681", "fontStyle": "italic" }
             },
             {
                 "comment": "Doc comments ///",
                 "scope": ["comment.line.documentation.sapi"],
-                "settings": { "foreground": "#6A9955", "fontStyle": "italic" }
+                "settings": { "foreground": "#6E7681", "fontStyle": "italic" }
             },
             {
                 "comment": "Route param name inside {section}",
                 "scope": ["variable.parameter.route.sapi"],
-                "settings": { "foreground": "#FFD580" }
+                "settings": { "foreground": "#86B8C8" }
             },
             {
                 "comment": "Route param braces { }",
@@ -110,22 +190,17 @@
                     "punctuation.definition.route-param.begin.sapi",
                     "punctuation.definition.route-param.end.sapi"
                 ],
-                "settings": { "foreground": "#9FA8B5" }
+                "settings": { "foreground": "#7F8792" }
             },
             {
                 "comment": "SQL identifiers inside () — column names, value names",
                 "scope": ["variable.other.sql-ident.sapi"],
-                "settings": { "foreground": "#9CDCFE" }
-            },
-            {
-                "comment": "SQL single-quoted string literals 'value'",
-                "scope": ["string.quoted.single.sql.sapi"],
-                "settings": { "foreground": "#CE9178" }
+                "settings": { "foreground": "#C1B39A" }
             },
             {
                 "comment": "SQL parentheses ( )",
                 "scope": ["punctuation.section.parens.sql.sapi"],
-                "settings": { "foreground": "#C8C8C8" }
+                "settings": { "foreground": "#7F8792" }
             }
         ]
     }
