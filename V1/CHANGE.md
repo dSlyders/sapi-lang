@@ -1,5 +1,16 @@
 ﻿# Sapi V1 — Changelog
 
+## 1.0.6
+
+- Mise a jour de la release publique en restant sur `V1` (pas de creation de `V2` pour ce patch).
+- Ajout des commandes plugin dans la CLI:
+	- `sapi plugin install`
+	- `sapi plugin reinstall`
+	- `sapi plugin doctor`
+	- `sapi plugin doctor --fix`
+- Installation plugin VS Code rendue autonome: assets plugin embarques dans le binaire `sapi`.
+- Alignement des binaires et de la documentation sur la version `1.0.6`.
+
 ## 1.0.5
 
 - Maintien de la release publique sur `V1` (suppression de `V2` du dépôt Distribution).
