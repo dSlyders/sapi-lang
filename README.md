@@ -290,6 +290,18 @@ sapi doc main.sapi --html
 
 # Générer la documentation dans un dossier spécifique
 sapi doc main.sapi --html --output api-docs
+
+# Installer l'extension VS Code Sapi (depuis le binaire CLI)
+sapi plugin install
+
+# Réinstaller proprement l'extension
+sapi plugin reinstall
+
+# Diagnostiquer l'installation plugin
+sapi plugin doctor
+
+# Diagnostiquer + corriger automatiquement
+sapi plugin doctor --fix
 ```
 
 ---
