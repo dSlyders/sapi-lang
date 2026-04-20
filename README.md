@@ -301,7 +301,7 @@ sapi run main.sapi
 # Mode watch — recompile automatiquement à chaque sauvegarde (dev)
 sapi watch main.sapi
 
-# Installer automatiquement Rust/Cargo + Build Tools C++ (Windows)
+# Installer automatiquement Rust/Cargo + Build Tools C++ + sqlx-cli (Windows)
 sapi install rust
 
 # Tout installer en une commande (CLI + Rust/C++), optionnellement depuis un binaire local

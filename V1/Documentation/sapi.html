@@ -251,7 +251,7 @@
       <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement. Artefacts locaux dans <code>.sapi/watch/out</code>.</td></tr>
       <tr><td><code>sapi install sapi --path &lt;chemin&gt;</code></td><td>Installe le binaire CLI téléchargé dans le dossier utilisateur approprié et configure le PATH automatiquement.</td></tr>
       <tr><td><code>sapi install all [--path &lt;chemin&gt;] [--linux]</code></td><td>Installe le CLI Sapi puis les prérequis Rust/C++ en une seule commande. Avec <code>--linux</code>, ajoute aussi Zig, <code>cargo-zigbuild</code> et la cible musl.</td></tr>
-      <tr><td><code>sapi install rust [--linux]</code></td><td>Installe Rust/Cargo + Build Tools C++ requis en local. Avec <code>--linux</code>, installe aussi Zig, <code>cargo-zigbuild</code> et la cible musl.</td></tr>
+      <tr><td><code>sapi install rust [--linux]</code></td><td>Installe Rust/Cargo + Build Tools C++ + <code>sqlx-cli</code> pour les migrations. Avec <code>--linux</code>, installe aussi Zig, <code>cargo-zigbuild</code> et la cible musl.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi]</code></td><td>Génère l'OpenAPI JSON sur stdout.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi] --html -o docs/</code></td><td>Génère un site HTML Scalar interactif.</td></tr>
       <tr><td><code>sapi new &lt;nom&gt;</code></td><td>Crée un nouveau projet Sapi dans un nouveau dossier.</td></tr>
