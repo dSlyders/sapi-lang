@@ -58,10 +58,14 @@ Ce code génère une API Rust complète avec documentation Swagger — sans écr
 2. Exécuter :
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "chemin\vers\install.ps1"
+sapi install sapi --path "chemin\vers\sapi.exe"
 ```
 
-Ou double-cliquer sur `install.ps1` → *Exécuter avec PowerShell*.
+Si `sapi` n'est pas encore installé globalement, lancez le binaire téléchargé directement :
+
+```powershell
+.\sapi.exe install sapi --path .\sapi.exe
+```
 
 ### Ce que l'installateur fait
 - Copie `sapi.exe` → `%LOCALAPPDATA%\sapi\bin\` et l'ajoute au **PATH** utilisateur
@@ -85,7 +89,13 @@ sapi --version
 2. Exécuter :
 
 ```bash
-bash /chemin/vers/install.sh
+sapi install sapi --path /chemin/vers/sapi
+```
+
+Si `sapi` n'est pas encore installé globalement, lancez le binaire téléchargé directement :
+
+```bash
+./sapi install sapi --path ./sapi
 ```
 
 ### Ce que l'installateur fait
@@ -294,8 +304,13 @@ sapi watch main.sapi
 # Installer automatiquement Rust/Cargo + Build Tools C++ (Windows)
 sapi install rust
 
+# Tout installer en une commande (CLI + Rust/C++), optionnellement depuis un binaire local
+sapi install all
+sapi install all --path "chemin\\vers\\sapi.exe"
+
 # Idem + prérequis cross-compilation Linux (zig, cargo-zigbuild, musl)
 sapi install rust --linux
+sapi install all --linux
 
 # Générer la documentation HTML (dans ./docs/)
 sapi doc main.sapi --html
@@ -386,10 +401,10 @@ Distribution/
     └── Install/
         ├── windows/
         │   ├── sapi.exe
-        │   └── install.ps1
+        │   └── sapi.exe
         └── linux/
             ├── sapi
-            └── install.sh
+            └── sapi
 ```
 
 ---
