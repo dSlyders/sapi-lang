@@ -253,9 +253,18 @@
       <tr><td><code>sapi doc [fichier.sapi] --html -o docs/</code></td><td>Génère un site HTML Scalar interactif.</td></tr>
       <tr><td><code>sapi new &lt;nom&gt;</code></td><td>Crée un nouveau projet Sapi dans un nouveau dossier.</td></tr>
       <tr><td><code>sapi plugin install</code></td><td>Installe l'extension VS Code Sapi depuis les assets embarqués dans le binaire CLI.</td></tr>
+      <tr><td><code>sapi plugin install-ai [--dir dossier] [--force]</code></td><td>Installe des instructions et skills Copilot (prompts) pour les projets Sapi dans <code>.github/</code>.</td></tr>
+      <tr><td><code>sapi migrate add [-r] &lt;nom&gt;</code></td><td>Crée une migration SQL (avec <code>-r</code> pour générer <code>.up.sql</code> + <code>.down.sql</code>).</td></tr>
+      <tr><td><code>sapi migrate run [--dry-run] [--ignore-missing]</code></td><td>Applique les migrations en attente via SQLx.</td></tr>
+      <tr><td><code>sapi migrate revert [--dry-run] [--ignore-missing] [--target-version N]</code></td><td>Revient en arrière d'une migration (ou jusqu'à une version cible).</td></tr>
+      <tr><td><code>sapi migrate info [--ignore-missing]</code></td><td>Affiche l'état des migrations SQLx.</td></tr>
       <tr><td><code>sapi plugin reinstall</code></td><td>Réinstalle proprement l'extension VS Code Sapi en supprimant les anciennes versions détectées.</td></tr>
       <tr><td><code>sapi plugin doctor [--fix]</code></td><td>Diagnostique l'installation du plugin VS Code et peut corriger automatiquement avec <code>--fix</code>.</td></tr>
     </table>
+
+    <div class="callout info">
+      <strong>Migration SQL</strong> — Les commandes <code>sapi migrate</code> utilisent SQLx CLI et lisent la connexion depuis <code>.env-migration</code> (<code>DB_TYPE</code>, <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_USER</code>, <code>DB_PASS</code>, <code>DB_NAME</code>). L'état est stocké dans la table <code>_sqlx_migrations</code> de la base ciblée.
+    </div>
 
     <h3>run vs watch</h3>
     <table>

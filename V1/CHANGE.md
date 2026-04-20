@@ -1,5 +1,14 @@
 ﻿# Sapi V1 — Changelog
 
+## 1.0.7
+
+- Remplacement de l'ancienne interface migration par une interface SQLx stricte: `sapi migrate ...`.
+- Commandes disponibles: `sapi migrate add`, `sapi migrate run`, `sapi migrate revert`, `sapi migrate info`.
+- Options de migration alignées SQLx: `--dry-run`, `--ignore-missing`, `--target-version`, `-r/--reversible`.
+- Suppression volontaire de l'alias `migration` pour conserver une seule commande canonique (`migrate`).
+- Mise à jour de l'aide CLI avec liens vers la documentation SQLx + exemples d'usage.
+- Documentation langage et README Distribution mis à jour pour le workflow `migrate`.
+
 ## 1.0.6
 
 - Mise a jour de la release publique en restant sur `V1` (pas de creation de `V2` pour ce patch).

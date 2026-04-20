@@ -277,7 +277,7 @@ sapi new mon-api
 sapi build main.sapi
 
 # Compiler vers un dossier spécifique
-sapi build main.sapi --output mon-projet
+sapi build main.sapi mon-projet
 
 # Lancer directement (compile + exécute)
 sapi run main.sapi
@@ -290,6 +290,18 @@ sapi doc main.sapi --html
 
 # Générer la documentation dans un dossier spécifique
 sapi doc main.sapi --html --output api-docs
+
+# Créer une migration SQL (fichiers .up.sql + .down.sql)
+sapi migrate add -r init_schema
+
+# Appliquer les migrations
+sapi migrate run
+
+# Afficher l'état des migrations
+sapi migrate info
+
+# Revert de la dernière migration
+sapi migrate revert
 
 # Installer l'extension VS Code Sapi (depuis le binaire CLI)
 sapi plugin install
