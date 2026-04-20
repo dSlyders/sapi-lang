@@ -5,10 +5,12 @@
 - Mise a jour de la release publique en restant sur `V1` (pas de creation de `V2` pour ce patch).
 - Ajout des commandes plugin dans la CLI:
 	- `sapi plugin install`
+	- `sapi plugin install-ai`
 	- `sapi plugin reinstall`
 	- `sapi plugin doctor`
 	- `sapi plugin doctor --fix`
 - Installation plugin VS Code rendue autonome: assets plugin embarques dans le binaire `sapi`.
+- Pack IA Copilot etendu pour Sapi: installation de 19 fichiers `.github` (instructions + prompts) pour dev, architecture, securite, runtime, SQL, tests et production.
 - Alignement des binaires et de la documentation sur la version `1.0.6`.
 
 ## 1.0.5

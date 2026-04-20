@@ -294,6 +294,12 @@ sapi doc main.sapi --html --output api-docs
 # Installer l'extension VS Code Sapi (depuis le binaire CLI)
 sapi plugin install
 
+# Installer les instructions + skills Copilot pour un projet Sapi
+sapi plugin install-ai
+
+# Installer dans un dossier cible et remplacer les fichiers existants
+sapi plugin install-ai --dir mon-api --force
+
 # Réinstaller proprement l'extension
 sapi plugin reinstall
 
