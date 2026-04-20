@@ -291,6 +291,12 @@ sapi run main.sapi
 # Mode watch — recompile automatiquement à chaque sauvegarde (dev)
 sapi watch main.sapi
 
+# Installer automatiquement Rust/Cargo + Build Tools C++ (Windows)
+sapi install rust
+
+# Idem + prérequis cross-compilation Linux (zig, cargo-zigbuild, musl)
+sapi install rust --linux
+
 # Générer la documentation HTML (dans ./docs/)
 sapi doc main.sapi --html
 

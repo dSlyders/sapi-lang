@@ -249,6 +249,7 @@
       <tr><td><code>sapi build --win</code></td><td>Force la compilation pour Windows (utile sur Linux).</td></tr>
       <tr><td><code>sapi run [fichier.sapi]</code></td><td>Compile et lance le serveur une fois (redémarrage manuel requis après modification). Artefacts locaux dans <code>.sapi/run/out</code>.</td></tr>
       <tr><td><code>sapi watch [fichier.sapi]</code></td><td>Compile, lance et <strong>redémarre automatiquement</strong> à chaque sauvegarde du <code>.sapi</code>. Idéal en développement. Artefacts locaux dans <code>.sapi/watch/out</code>.</td></tr>
+      <tr><td><code>sapi install rust [--linux]</code></td><td>Installe Rust/Cargo + Build Tools C++ requis en local. Avec <code>--linux</code>, installe aussi Zig, <code>cargo-zigbuild</code> et la cible musl.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi]</code></td><td>Génère l'OpenAPI JSON sur stdout.</td></tr>
       <tr><td><code>sapi doc [fichier.sapi] --html -o docs/</code></td><td>Génère un site HTML Scalar interactif.</td></tr>
       <tr><td><code>sapi new &lt;nom&gt;</code></td><td>Crée un nouveau projet Sapi dans un nouveau dossier.</td></tr>
@@ -317,6 +318,7 @@ cargo install cargo-zigbuild
 
 <span class="cm"># Ajouter la cible musl x86_64</span>
 rustup target add x86_64-unknown-linux-musl</code></pre>
+    <p>Sur Windows, vous pouvez automatiser l'installation locale avec <code>sapi install rust</code> (et <code>sapi install rust --linux</code> pour les prérequis de cross-compilation).</p>
     <p>Si l'un de ces prérequis manque, <code>sapi build --linux</code> affiche un message d'erreur clair avec la commande d'installation à lancer.</p>
 
     <pre><code><span class="cm"># Exemple de configuration nginx</span>
