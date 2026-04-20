@@ -344,7 +344,7 @@
         },
         {
           "name": "keyword.declaration.sapi",
-          "match": "\\b(service|database|fn|async|lock|sql|use|route|new|guard|body|auth|header|cookie|field|claims|log)\\b"
+          "match": "\\b(service|database|import|fn|async|lock|sql|use|route|new|guard|body|auth|header|cookie|field|claims|log)\\b"
         }
       ]
     },

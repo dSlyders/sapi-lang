@@ -175,7 +175,7 @@
     <li><a href="#comments">Commentaires</a></li>
 
     <li class="section">Structure</li>
-    <li><a href="#use">use — imports</a></li>
+    <li><a href="#import">import — multi-fichiers</a></li>
     <li><a href="#database">database</a></li>
     <li><a href="#service">service</a></li>
     <li><a href="#routes">Routes HTTP</a></li>
@@ -339,10 +339,12 @@ location / {
   <hr>
 
   <!-- ─────────────────────────────────── USE -->
-  <section id="use">
-    <h2>use — Imports</h2>
-    <pre><code><span class="kw">use</span> <span class="str">"std/http"</span></code></pre>
-    <p>Déclare les bibliothèques standard utilisées. <code>"std/http"</code> est la bibliothèque HTTP de base (inclut Axum, Tokio, serde).</p>
+  <section id="import">
+    <h2>import — Multi-fichiers</h2>
+    <pre><code><span class="kw">import</span> <span class="str">"./routes/users.sapi"</span>
+<span class="kw">import</span> <span class="str">"./routes/admin.sapi"</span></code></pre>
+    <p><code>import</code> inclut d'autres fichiers <code>.sapi</code> de façon récursive.</p>
+    <p>Règles: chemin local vers un fichier <code>.sapi</code>, détection de cycle d'import, et erreur en cas de conflit de symboles globaux (fonctions/services/databases/auth).</p>
   </section>
 
   <!-- ─────────────────────────────────── DATABASE -->
@@ -395,11 +397,12 @@ location / {
     port:    <span class="num">3000</span>
     swagger: <span class="kw">true</span>          <span class="cm">// active /swagger-ui</span>
     cors:    <span class="kw">true</span>          <span class="cm">// CORS ouvert (toutes origines)</span>
-    logging: <span class="str">"info"</span>
-        log {
-          path:  <span class="str">"logs/userapi-access.log"</span>
-          level: <span class="str">"info"</span>
-        }
+    log {
+      access_path:  <span class="str">"logs/userapi-access.log"</span>
+      access_level: <span class="str">"info"</span>
+      error_path:   <span class="str">"logs/userapi-error.log"</span>
+      error_level:  <span class="str">"error"</span>
+    }
 }
 
 <span class="kw">service</span> <span class="fn">AdminApi</span> {
@@ -408,7 +411,12 @@ location / {
     cors:    [<span class="str">"https://admin.example.com"</span>, <span class="str">"https://backoffice.example.com"</span>]
     limit:   <span class="num">50</span>            <span class="cm">// requêtes concurrentes max</span>
     timeout: <span class="num">30</span>            <span class="cm">// secondes avant timeout</span>
-    logging: <span class="str">"debug"</span>
+    log {
+      access_path:  <span class="str">"logs/admin-access.log"</span>
+      access_level: <span class="str">"debug"</span>
+      error_path:   <span class="str">"logs/admin-error.log"</span>
+      error_level:  <span class="str">"warn"</span>
+    }
 }</code></pre>
 
     <table>
@@ -418,8 +426,7 @@ location / {
       <tr><td><code>cors</code></td><td><code>true</code> / <code>"origin"</code> / <code>["o1","o2"]</code></td><td>CORS : all / une origine / liste</td></tr>
       <tr><td><code>limit</code></td><td>entier</td><td>Limite de concurrence (rate limiting)</td></tr>
       <tr><td><code>timeout</code></td><td>entier (secondes)</td><td>Timeout de requête</td></tr>
-      <tr><td><code>logging</code></td><td><code>"info"</code> <code>"debug"</code> <code>"warn"</code> <code>"error"</code></td><td>Niveau de log tracing</td></tr>
-        <tr><td><code>log { path, level }</code></td><td>bloc optionnel</td><td>Active les logs d'accès HTTP (route, IP, user-agent, status, durée). Sans ce bloc, aucun access log n'est émis.</td></tr>
+      <tr><td><code>log { access_path, access_level, error_path, error_level }</code></td><td>bloc optionnel</td><td>Configuration unifiée: access logs HTTP + logs d'erreur/runtime.</td></tr>
     </table>
       <p>Le bloc <code>log</code> utilise la même politique de rotation que <code>sapi.conf</code> (<code>log.rotate.max_bytes</code> et <code>log.rotate.max_files</code>).</p>
   </section>
@@ -1157,8 +1164,8 @@ pub struct GetUsers {
     <ul>
       <li><code>service.port</code> défini et libre.</li>
       <li><code>service.timeout</code> défini pour éviter les requêtes pendantes.</li>
-      <li><code>service.logging</code> cohérent avec l'environnement (<code>info</code> ou <code>warn</code> en prod).</li>
-      <li>Si besoin d'access logs HTTP: bloc <code>service.log { path, level }</code>.</li>
+      <li><code>service.log.error_level</code> cohérent avec l'environnement (<code>warn</code> ou <code>error</code> en prod).</li>
+      <li>Si besoin d'access logs HTTP: renseigner <code>service.log.access_path</code> et <code>service.log.access_level</code>.</li>
       <li><code>sapi.conf</code> présent (ou variable <code>SAPI_CONF</code>) avec rotation de logs configurée.</li>
     </ul>
 
@@ -1259,9 +1266,7 @@ sapi doc mon_api.sapi --html --output docs</code></pre>
   <!-- ─────────────────────────────────── EXEMPLE COMPLET -->
   <section id="example">
     <h2>Exemple complet minimal</h2>
-    <pre><code><span class="kw">use</span> <span class="str">"std/http"</span>
-
-<span class="kw">database</span> <span class="fn">DB</span> {
+    <pre><code><span class="kw">database</span> <span class="fn">DB</span> {
     type: <span class="str">"postgres"</span>
     host: <span class="fn">env</span>(<span class="str">"DB_HOST"</span>)
     port: <span class="fn">env</span>(<span class="str">"DB_PORT"</span>)
@@ -1275,7 +1280,12 @@ sapi doc mon_api.sapi --html --output docs</code></pre>
     port:    <span class="num">3000</span>
     swagger: <span class="kw">true</span>
     cors:    <span class="kw">true</span>
-    logging: <span class="str">"info"</span>
+    log {
+      access_path:  <span class="str">"logs/api-access.log"</span>
+      access_level: <span class="str">"info"</span>
+      error_path:   <span class="str">"logs/api-error.log"</span>
+      error_level:  <span class="str">"error"</span>
+    }
 }
 
 <span class="kw">fn</span> <span class="fn">slugify</span>(<span class="ty">string</span> text) {
@@ -1333,5 +1343,4 @@ sapi doc mon_api.sapi --html --output docs</code></pre>
 
 </main>
 </body>
-<!-- Redeploy marker: 1.0.7 migrate docs -->
 </html>

@@ -7,7 +7,12 @@
 			"\tport: ${2:3000}",
 			"\tswagger: ${3:true}",
 			"\tcors: ${4:true}",
-			"\tlogging: \"${5:info}\"",
+			"\tlog {",
+			"\t\taccess_path: \"${5:logs/access.log}\"",
+			"\t\taccess_level: \"${6:info}\"",
+			"\t\terror_path: \"${7:logs/error.log}\"",
+			"\t\terror_level: \"${8:error}\"",
+			"\t}",
 			"}"
 		],
 		"description": "Declare a service block"
