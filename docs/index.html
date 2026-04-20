@@ -262,6 +262,10 @@
       <tr><td><code>sapi plugin doctor [--fix]</code></td><td>Diagnostique l'installation du plugin VS Code et peut corriger automatiquement avec <code>--fix</code>.</td></tr>
     </table>
 
+    <div class="callout warn">
+      <strong>Prerequis local</strong> — <code>sapi build</code>, <code>sapi run</code> et <code>sapi watch</code> compilent un projet Rust genere localement. Il faut donc Rust/Cargo sur la machine de developpement (installation: <code>https://rustup.rs</code>). En production, seul le binaire compile <code>sapi_server</code> est necessaire.
+    </div>
+
     <div class="callout info">
       <strong>Migration SQL</strong> — Les commandes <code>sapi migrate</code> utilisent SQLx CLI et lisent la connexion depuis <code>.env-migration</code> (<code>DB_TYPE</code>, <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_USER</code>, <code>DB_PASS</code>, <code>DB_NAME</code>). L'état est stocké dans la table <code>_sqlx_migrations</code> de la base ciblée.
     </div>

@@ -269,6 +269,12 @@ Ctrl+Shift+P  →  Developer: Reload Window
 
 ## Compiler et lancer
 
+> Important (dev local): `sapi build`, `sapi run` et `sapi watch` compilent un projet Rust genere. Il faut donc Rust/Cargo installe sur la machine de developpement.
+>
+> Installation rapide: https://rustup.rs
+>
+> En production, seul le binaire final `sapi_server` est necessaire (pas Rust, pas Sapi).
+
 ```bash
 # Créer un nouveau projet
 sapi new mon-api
