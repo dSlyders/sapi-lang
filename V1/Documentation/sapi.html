@@ -3,146 +3,211 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sapi - Language Reference</title>
+  <title>Sapi - Complete Documentation</title>
   <style>
     :root {
-      --bg:#0f1117; --bg2:#161b22; --bg3:#1c2128; --border:#30363d;
-      --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --ok:#3fb950; --warn:#d29922;
+      --bg: #0f1117;
+      --bg2: #161b22;
+      --bg3: #1c2128;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --ok: #3fb950;
+      --warn: #d29922;
     }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,Segoe UI,Arial,sans-serif; display:flex; min-height:100vh; }
-    nav { width:260px; background:var(--bg2); border-right:1px solid var(--border); padding:20px 12px; position:sticky; top:0; height:100vh; overflow:auto; }
-    nav h1 { font-size:20px; margin:0 0 2px; color:var(--accent); }
-    nav p { margin:0 0 14px; color:var(--muted); font-size:12px; }
-    nav a { display:block; padding:6px 10px; color:var(--muted); text-decoration:none; border-radius:6px; font-size:13px; }
-    nav a:hover { background:var(--bg3); color:var(--text); }
-    main { max-width:920px; padding:42px 52px; }
-    h1 { margin:0 0 8px; color:var(--accent); }
-    h2 { margin-top:42px; border-bottom:1px solid var(--border); padding-bottom:8px; }
-    h3 { margin-top:24px; color:var(--accent); }
-    p, li { color:#cdd9e5; line-height:1.6; }
-    code { font-family:Cascadia Code,Consolas,monospace; }
-    p code, li code, td code { background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:1px 6px; color:#f0883e; }
-    pre { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:14px 16px; overflow:auto; }
-    table { width:100%; border-collapse:collapse; margin:12px 0 20px; }
-    th, td { border:1px solid var(--border); padding:8px 10px; text-align:left; }
-    th { background:var(--bg3); color:var(--muted); font-size:12px; text-transform:uppercase; }
-    .callout { border-left:3px solid var(--warn); background:#2a2510; border-radius:0 6px 6px 0; padding:10px 14px; }
-    .ok { border-left-color:var(--ok); background:#132b1b; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, Segoe UI, Arial, sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+    nav {
+      width: 280px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 20px 12px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+    }
+    nav h1 { font-size: 20px; margin: 0 0 2px; color: var(--accent); }
+    nav p { margin: 0 0 14px; color: var(--muted); font-size: 12px; }
+    nav a {
+      display: block;
+      padding: 6px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    nav a:hover { background: var(--bg3); color: var(--text); }
+    main { max-width: 980px; padding: 42px 52px; }
+    h1 { margin: 0 0 8px; color: var(--accent); }
+    h2 { margin-top: 42px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    h3 { margin-top: 24px; color: var(--accent); }
+    p, li { color: #cdd9e5; line-height: 1.6; }
+    code { font-family: Cascadia Code, Consolas, monospace; }
+    p code, li code, td code {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: #f0883e;
+    }
+    pre {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow: auto;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+    th {
+      background: var(--bg3);
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .callout {
+      border-left: 3px solid var(--warn);
+      background: #2a2510;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+    }
+    .ok {
+      border-left-color: var(--ok);
+      background: #132b1b;
+    }
+    a { color: var(--accent); }
   </style>
 </head>
 <body>
 <nav>
   <h1>Sapi</h1>
-  <p>Language reference v1</p>
-  <a href="#intro">Introduction</a>
-  <a href="#cli">CLI</a>
-  <a href="#project">Create project</a>
-  <a href="#service">Service and routes</a>
-  <a href="#types">Types and variables</a>
-  <a href="#control">Control flow</a>
-  <a href="#functions">Functions</a>
-  <a href="#database">Database and SQL</a>
-  <a href="#auth">JWT auth and guard</a>
-  <a href="#runwatch">Run vs watch</a>
-  <a href="#deploy">Deployment</a>
-  <a href="#doc">Documentation generation</a>
+  <p>Complete documentation</p>
+  <a href="#intro">1. Introduction</a>
+  <a href="#install">2. Installation</a>
+  <a href="#quickstart">3. Quick start</a>
+  <a href="#commands">4. CLI commands</a>
+  <a href="#language">5. Language basics</a>
+  <a href="#database">6. Database and SQL</a>
+  <a href="#migrations">7. Migrations</a>
+  <a href="#auth">8. JWT auth and guard</a>
+  <a href="#runwatch">9. Run and watch</a>
+  <a href="#deploy">10. Deployment</a>
+  <a href="#docgen">11. Documentation generation</a>
+  <a href="#full-example">12. Full .sapi example</a>
 </nav>
+
 <main>
   <h1>Sapi</h1>
-  <p>Complete language reference for building APIs that compile to Rust (Axum + Tokio).</p>
+  <p>End-to-end reference for building APIs with Sapi (compiled to Rust with Axum + Tokio).</p>
 
   <section id="intro">
-    <h2>Introduction</h2>
-    <p>Sapi is a high-level language for API development. A `.sapi` source file defines services, routes, data access, auth, and runtime behavior. The compiler generates Rust code and binaries suitable for production deployment.</p>
+    <h2>1. Introduction</h2>
+    <p>Sapi is a high-level language focused on API development. A <code>.sapi</code> file defines service configuration, routes, SQL queries, validation, auth, and response structures.</p>
+    <p>The Sapi compiler generates a production-ready Rust server and can build binaries for local or Linux deployment.</p>
   </section>
 
-  <section id="cli">
-    <h2>CLI</h2>
-    <p>If the file is omitted, `sapi` tries `main.sapi` in the current directory.</p>
+  <section id="install">
+    <h2>2. Installation</h2>
+    <h3>Windows installer (recommended)</h3>
+    <p>Download the installer directly from GitHub:</p>
+    <p><a href="https://github.com/dSlyders/sapi-lang/releases/latest/download/sapi-install.exe">https://github.com/dSlyders/sapi-lang/releases/latest/download/sapi-install.exe</a></p>
+    <p>After installation, open a new terminal and verify:</p>
+    <pre><code>sapi -V</code></pre>
+
+    <h3>Alternative links</h3>
+    <ul>
+      <li>Latest releases page: <a href="https://github.com/dSlyders/sapi-lang/releases/latest">https://github.com/dSlyders/sapi-lang/releases/latest</a></li>
+      <li>All releases: <a href="https://github.com/dSlyders/sapi-lang/releases">https://github.com/dSlyders/sapi-lang/releases</a></li>
+    </ul>
+
+    <h3>Developer prerequisites</h3>
+    <p>For local compilation with <code>sapi build</code>, <code>sapi run</code> or <code>sapi watch</code>, install prerequisites:</p>
+    <pre><code>sapi install prerequisites</code></pre>
+    <p>Install VS Code plugin tooling:</p>
+    <pre><code>sapi install plugin vscode</code></pre>
+  </section>
+
+  <section id="quickstart">
+    <h2>3. Quick start</h2>
+    <pre><code>sapi new my-api
+cd my-api
+sapi run</code></pre>
+    <p><code>sapi new</code> generates a starter project, including <code>main.sapi</code> and <code>sapi.conf</code>.</p>
+  </section>
+
+  <section id="commands">
+    <h2>4. CLI commands</h2>
+    <p>If the source file is omitted, Sapi uses <code>main.sapi</code> by default.</p>
     <table>
       <tr><th>Command</th><th>Description</th></tr>
-      <tr><td><code>sapi build [file.sapi]</code></td><td>Builds release binary into `./dist` with build log.</td></tr>
-      <tr><td><code>sapi build --linux</code></td><td>Cross-builds Linux musl static binary.</td></tr>
-      <tr><td><code>sapi run [file.sapi]</code></td><td>Builds and runs once.</td></tr>
-      <tr><td><code>sapi watch [file.sapi]</code></td><td>Builds, runs, and restarts on save.</td></tr>
-      <tr><td><code>sapi-install.exe</code></td><td>Preferred Windows installer package for end users (installs CLI + PATH).</td></tr>
-      <tr><td><code>sapi install sapi --path &lt;path&gt;</code></td><td>Installs a downloaded Sapi binary and updates PATH.</td></tr>
-      <tr><td><code>sapi install rust [--linux]</code></td><td>Installs Rust/Cargo, C++ build tools, sqlx-cli, and optional Linux build prerequisites.</td></tr>
-      <tr><td><code>sapi install all [--path &lt;path&gt;] [--linux]</code></td><td>Installs Sapi CLI and Rust prerequisites in one command.</td></tr>
-      <tr><td><code>sapi migrate add|run|revert|info</code></td><td>SQLx-compatible migration workflow.</td></tr>
-      <tr><td><code>sapi doc [file.sapi] --html</code></td><td>Generates OpenAPI and HTML docs.</td></tr>
-      <tr><td><code>sapi plugin install</code></td><td>Installs VS Code extension assets from CLI.</td></tr>
+      <tr><td><code>sapi build [file.sapi]</code></td><td>Compile a release server binary.</td></tr>
+      <tr><td><code>sapi build --linux</code></td><td>Cross-build Linux binary.</td></tr>
+      <tr><td><code>sapi run [file.sapi]</code></td><td>Build and run once.</td></tr>
+      <tr><td><code>sapi watch [file.sapi]</code></td><td>Watch files and auto-rebuild/restart.</td></tr>
+      <tr><td><code>sapi doc [file.sapi] --html</code></td><td>Generate documentation.</td></tr>
+      <tr><td><code>sapi new &lt;project&gt;</code></td><td>Create a new Sapi project.</td></tr>
+      <tr><td><code>sapi install prerequisites</code></td><td>Install local build prerequisites for current OS.</td></tr>
+      <tr><td><code>sapi install plugin vscode</code></td><td>Install or update VS Code plugin.</td></tr>
+      <tr><td><code>sapi migrate ...</code></td><td>SQLx-style migration command group.</td></tr>
     </table>
-    <div class="callout">
-      <strong>Local prerequisite:</strong> `build`, `run`, and `watch` compile Rust locally. Rust/Cargo must be available on development machines.
-    </div>
   </section>
 
-  <section id="project">
-    <h2>Create project</h2>
-    <pre><code>sapi new my-api
-cd my-api</code></pre>
-    <p>This creates a starter project with `main.sapi` and `.vscode` snippets/settings.</p>
-  </section>
-
-  <section id="service">
-    <h2>Service and routes</h2>
+  <section id="language">
+    <h2>5. Language basics</h2>
+    <h3>Service and routes</h3>
     <pre><code>service MyApi {
   port: 3000
   swagger: true
   cors: true
-  logging: "info"
 }
 
 MyApi get "/ping" {
   return "pong"
 }
 
-MyApi post "/user" {
-  body json { string name, int age }
-  return 201: { string message = "Created", string user = name }
+MyApi post "/users" {
+  body json {
+    string name
+    int age
+  }
+  return 201: { string message = "created", string user = name }
 }
 
-MyApi get "/user/{id}" {
+MyApi get "/users/{id}" {
   route { int id }
   return { int userId = id }
 }</code></pre>
-  </section>
 
-  <section id="types">
-    <h2>Types and variables</h2>
+    <h3>Types</h3>
     <table>
       <tr><th>Type</th><th>Example</th></tr>
       <tr><td><code>string</code></td><td><code>string name = "Alice"</code></td></tr>
       <tr><td><code>int</code></td><td><code>int age = 30</code></td></tr>
-      <tr><td><code>float</code></td><td><code>float price = 9.99</code></td></tr>
+      <tr><td><code>float</code></td><td><code>float ratio = 1.25</code></td></tr>
       <tr><td><code>bool</code></td><td><code>bool active = true</code></td></tr>
       <tr><td><code>list:string</code></td><td><code>list:string tags = ["a", "b"]</code></td></tr>
-      <tr><td><code>json</code></td><td><code>json payload = { "k": "v" }</code></td></tr>
+      <tr><td><code>json</code></td><td><code>json payload = { "ok": true }</code></td></tr>
     </table>
-    <pre><code>string name = "Alice"
-string msg = "Hello, {name}!"
-return msg</code></pre>
-  </section>
 
-  <section id="control">
-    <h2>Control flow</h2>
-    <pre><code>if value > 100 {
-  return "high"
-} else if value > 50 {
-  return "medium"
+    <h3>Control flow</h3>
+    <pre><code>if score >= 90 {
+  return "A"
+} else if score >= 75 {
+  return "B"
 } else {
-  return "low"
-}
-
-for string item in tags {
-  push out item
+  return "C"
 }</code></pre>
-  </section>
 
-  <section id="functions">
-    <h2>Functions</h2>
+    <h3>Functions</h3>
     <pre><code>fn double(int n) {
   int result = n * 2
   return result
@@ -150,68 +215,97 @@ for string item in tags {
   </section>
 
   <section id="database">
-    <h2>Database and SQL</h2>
-    <pre><code>database DB {
-  type: "postgres"
-  host: env("DB_HOST")
-  port: env("DB_PORT")
-  user: env("DB_USER")
-  pass: env("DB_PASS")
-  name: "mydb"
+    <h2>6. Database and SQL</h2>
+    <p>Database blocks are now URL-based only. Use <code>url</code> with an explicit string or <code>env(...)</code>.</p>
+    <pre><code>database MainDB {
+  url: env("DATABASE_URL")
+  log {
+    path: "logs/sql.log"
+    level: "debug"
+    slow: 180
+  }
 }
 
-sql getUser = `SELECT id, name FROM users WHERE id = {id}` : { int:id, string:name } use DB
+sql findUser = `SELECT id, name FROM users WHERE id = {id}` : {
+  int id
+  string name
+} use MainDB
 
-MyApi get "/user/{id}" {
+MyApi get "/users/{id}" {
   route { int id }
-  await User row = getUser({ id: id }).one()
+  await FindUser row = findUser({ id: id }).one()
   return { int id = row.id, string name = row.name }
 }</code></pre>
+    <div class="callout ok">
+      <strong>Supported URL schemes:</strong> <code>postgres://...</code>, <code>mysql://...</code>, <code>mariadb://...</code>, <code>sqlite:...</code>
+    </div>
+  </section>
+
+  <section id="migrations">
+    <h2>7. Migrations</h2>
+    <p>Sapi includes SQLx-style migration commands.</p>
+    <table>
+      <tr><th>Command</th><th>Description</th></tr>
+      <tr><td><code>sapi migrate add -r init_schema</code></td><td>Create a reversible migration pair.</td></tr>
+      <tr><td><code>sapi migrate run</code></td><td>Apply pending migrations.</td></tr>
+      <tr><td><code>sapi migrate revert</code></td><td>Revert last migration.</td></tr>
+      <tr><td><code>sapi migrate info</code></td><td>Show migration status.</td></tr>
+      <tr><td><code>sapi migrate build-script</code></td><td>Generate Cargo build.rs migration watcher.</td></tr>
+      <tr><td><code>sapi migrate prepare</code></td><td>Generate SQLx offline metadata.</td></tr>
+      <tr><td><code>sapi migrate database create|drop|reset|setup</code></td><td>Database utility commands.</td></tr>
+    </table>
+    <p>Useful flags include <code>--database-url</code>, <code>--connect-timeout</code>, and <code>--no-dotenv</code>.</p>
   </section>
 
   <section id="auth">
-    <h2>JWT auth and guard</h2>
+    <h2>8. JWT auth and guard</h2>
     <pre><code>auth Auth {
   secret: env("JWT_SECRET")
   algorithm: "HS256"
   expiry: 3600
-  claims: { int userId, string role }
+  claims: {
+    int userId
+    string role
+  }
 }
 
 MyApi get "/profile" {
   guard Auth
-  return "Authorized"
+  return "authorized"
 }
 
-MyApi delete "/admin/user/{id}" {
+MyApi delete "/admin/users/{id}" {
   guard Auth "admin"
   route { int id }
-  return { string message = "Deleted" }
+  return { string message = "deleted" }
 }</code></pre>
   </section>
 
   <section id="runwatch">
-    <h2>Run vs watch</h2>
+    <h2>9. Run and watch</h2>
     <table>
-      <tr><th></th><th><code>sapi run</code></th><th><code>sapi watch</code></th></tr>
-      <tr><td>Start server</td><td>Yes</td><td>Yes</td></tr>
-      <tr><td>Restart on save</td><td>No</td><td>Yes</td></tr>
-      <tr><td>Typical use</td><td>One-off test / CI</td><td>Active development</td></tr>
+      <tr><th>Behavior</th><th><code>sapi run</code></th><th><code>sapi watch</code></th></tr>
+      <tr><td>Builds code</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Starts server</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Auto restart on save</td><td>No</td><td>Yes</td></tr>
     </table>
+    <p>When <code>swagger: true</code> is enabled, runtime output includes:</p>
+    <ul>
+      <li>API URL: <code>http://localhost:PORT</code></li>
+      <li>Swagger URL: <code>http://localhost:PORT/swagger</code></li>
+    </ul>
   </section>
 
   <section id="deploy">
-    <h2>Deployment</h2>
-    <pre><code># Build release
+    <h2>10. Deployment</h2>
+    <pre><code># Build production binary
 sapi build
 
 # Build Linux binary from Windows
-sapi build --linux
+sapi build --linux</code></pre>
+    <p>The output binary is standalone for server deployment.</p>
 
-# Run binary on server
-./sapi_server</code></pre>
-    <p>The compiled binary is standalone. Rust and Sapi are not required on the production server.</p>
-    <h3>Nginx example</h3>
+    <h3>Nginx reverse proxy example</h3>
     <pre><code>location / {
   proxy_pass http://127.0.0.1:3000;
   proxy_set_header Host $host;
@@ -219,16 +313,79 @@ sapi build --linux
 }</code></pre>
   </section>
 
-  <section id="doc">
-    <h2>Documentation generation</h2>
+  <section id="docgen">
+    <h2>11. Documentation generation</h2>
     <pre><code># OpenAPI JSON to stdout
 sapi doc main.sapi
 
 # HTML docs
 sapi doc main.sapi --html --output docs</code></pre>
     <div class="callout ok">
-      <strong>Tip:</strong> Use `LANGUAGE.html` as the canonical source and sync to `Distribution/docs/index.html` and `Distribution/V1/Documentation/sapi.html`.
+      <strong>Canonical source:</strong> edit <code>LANGUAGE.html</code> and sync to release docs.
     </div>
+  </section>
+
+  <section id="full-example">
+    <h2>12. Full .sapi example</h2>
+    <pre><code>service MyApi {
+  port: 3000
+  swagger: true
+  cors: true
+}
+
+database MainDB {
+  url: env("DATABASE_URL")
+  log {
+    path: "logs/sql-main.log"
+    level: "info"
+    slow: 200
+  }
+}
+
+auth Auth {
+  secret: env("JWT_SECRET")
+  algorithm: "HS256"
+  expiry: 3600
+  claims: {
+    int userId
+    string role
+  }
+}
+
+sql findUser = `
+SELECT id, name, role
+FROM users
+WHERE id = {id}
+` : {
+  int id
+  string name
+  string role
+} use MainDB
+
+MyApi get "/ping" {
+  return "pong"
+}
+
+MyApi get "/users/{id}" {
+  route { int id }
+  await FindUser user = findUser({ id: id }).one()
+  return {
+    int id = user.id
+    string name = user.name
+    string role = user.role
+  }
+}
+
+MyApi get "/me" {
+  guard Auth
+  return "authenticated"
+}
+
+MyApi delete "/admin/users/{id}" {
+  guard Auth "admin"
+  route { int id }
+  return { string status = "deleted" }
+}</code></pre>
   </section>
 </main>
 </body>
