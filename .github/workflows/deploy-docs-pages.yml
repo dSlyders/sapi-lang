@@ -29,8 +29,11 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
+
+      - name: Validate docs artifact
+        run: |
+          test -d docs
+          test -f docs/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
