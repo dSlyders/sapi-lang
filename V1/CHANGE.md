@@ -1,59 +1,58 @@
-﻿# Sapi V1 — Changelog
+﻿# Sapi V1 - Changelog
 
 ## 1.0.7
 
-- Remplacement de l'ancienne interface migration par une interface SQLx stricte: `sapi migrate ...`.
-- Commandes disponibles: `sapi migrate add`, `sapi migrate run`, `sapi migrate revert`, `sapi migrate info`.
-- Options de migration alignées SQLx: `--dry-run`, `--ignore-missing`, `--target-version`, `-r/--reversible`.
-- Suppression volontaire de l'alias `migration` pour conserver une seule commande canonique (`migrate`).
-- Mise à jour de l'aide CLI avec liens vers la documentation SQLx + exemples d'usage.
-- Documentation langage et README Distribution mis à jour pour le workflow `migrate`.
+- Replaced the previous migration interface with strict SQLx commands: `sapi migrate ...`.
+- Available commands: `sapi migrate add`, `sapi migrate run`, `sapi migrate revert`, `sapi migrate info`.
+- SQLx-aligned migration options: `--dry-run`, `--ignore-missing`, `--target-version`, `-r/--reversible`.
+- Intentionally removed the `migration` alias to keep a single canonical command (`migrate`).
+- Updated CLI help with SQLx documentation links and usage examples.
+- Updated language documentation and Distribution README for the `migrate` workflow.
 
 ## 1.0.6
 
-- Mise a jour de la release publique en restant sur `V1` (pas de creation de `V2` pour ce patch).
-- Ajout des commandes plugin dans la CLI:
-	- `sapi plugin install`
-	- `sapi plugin install-ai`
-	- `sapi plugin reinstall`
-	- `sapi plugin doctor`
-	- `sapi plugin doctor --fix`
-- Installation plugin VS Code rendue autonome: assets plugin embarques dans le binaire `sapi`.
-- Pack IA Copilot etendu pour Sapi: installation de 19 fichiers `.github` (instructions + prompts) pour dev, architecture, securite, runtime, SQL, tests et production.
-- Alignement des binaires et de la documentation sur la version `1.0.6`.
+- Updated the public release while staying on `V1` (no `V2` creation for this patch).
+- Added plugin commands to CLI:
+  - `sapi plugin install`
+  - `sapi plugin install-ai`
+  - `sapi plugin reinstall`
+  - `sapi plugin doctor`
+  - `sapi plugin doctor --fix`
+- Made VS Code plugin installation autonomous: plugin assets embedded in `sapi` binary.
+- Expanded Copilot AI pack for Sapi: installation of 19 `.github` files (instructions + prompts) for development, architecture, security, runtime, SQL, testing, and production.
+- Aligned binaries and documentation to version `1.0.6`.
 
 ## 1.0.5
 
-- Maintien de la release publique sur `V1` (suppression de `V2` du dépôt Distribution).
-- Bump version CLI vers `1.0.5` (source compilateur et artefacts associés).
-- Alignement des fichiers de version côté éditeur/plugin sur `1.0.5`.
+- Kept public release on `V1` (removed `V2` from Distribution repository).
+- Bumped CLI version to `1.0.5` (compiler source and related artifacts).
+- Aligned editor/plugin version files to `1.0.5`.
 
-## Nouveautés
+## New Features
 
-- **`sapi build --linux`** cross-compile un binaire Linux musl x86_64 statique depuis Windows (nécessite `zig`, `cargo-zigbuild` et la target `x86_64-unknown-linux-musl`). Vérifications préalables automatiques avec messages d'erreur clairs si un prérequis manque.
-- **`sapi build --win`** force la compilation Windows (utile sur Linux).
-- **`sapi build`** compile maintenant toujours en mode release et produit un binaire standalone prêt à déployer.
-- **`sapi build --log <dossier>`** copie le binaire et génère un `build.log` dans le dossier spécifié.
-- **Argument fichier optionnel** — `sapi run`, `sapi watch`, `sapi build` et `sapi doc` détectent automatiquement `main.sapi` dans le dossier courant si aucun fichier n'est spécifié.
-- **`sapi watch`** génère ses artefacts dans `%TEMP%` (invisible dans le workspace, comme `sapi run`).
-- **`sapi new <nom>`** crée un nouveau projet Sapi avec structure et fichier d'exemple.
-- **Processus visible** — `sapi run` et `sapi watch` lancent maintenant directement `sapi_server.exe` (plus `cargo`), visible tel quel dans le gestionnaire des tâches.
-- **if / else / else if** — branches conditionnelles avec opérateurs `==`, `!=`, `>`, `<`, `>=`, `<=`.
-- **Erreurs SQL en JSON** — les erreurs de requête retournent `{"error":"sql_error","message":"..."}` avec `eprintln` côté serveur.
-- **Guard hiérarchique dans `auth`** — support d'un bloc `guard { key, guard_op/op, roles }` directement dans la configuration Auth JWT.
-- **Priorités dynamiques de rôles** — la clé de ranking est configurable (`rank`, `weight`, `priority`, ...), avec comparaison via `guard_op` (`>=`, `>`, `==`, `<=`, `<`).
-- **Super-rôle** — support de `super: true` pour bypass des checks de niveau.
-- **Syntaxe courte de route** — support de `guard "role"` en plus de `guard Auth "role"`.
-- **Nouveaux tests guard multi-rôles** — scénario dédié validant hiérarchie, super-rôle, syntaxe courte et compatibilité des contrôles 401/403.
+- **`sapi build --linux`** cross-compiles a static Linux musl x86_64 binary from Windows (requires `zig`, `cargo-zigbuild`, and target `x86_64-unknown-linux-musl`). Includes automatic preflight checks and clear error messages if prerequisites are missing.
+- **`sapi build --win`** forces Windows build target (useful on Linux).
+- **`sapi build`** now always compiles in release mode and outputs a deploy-ready standalone binary.
+- **`sapi build --log <folder>`** copies the binary and creates `build.log` in the specified folder.
+- **Optional file argument** - `sapi run`, `sapi watch`, `sapi build`, and `sapi doc` auto-detect `main.sapi` in the current directory if no file is specified.
+- **`sapi watch`** writes artifacts into `%TEMP%` (invisible in workspace, like `sapi run`).
+- **`sapi new <name>`** creates a new Sapi project with structure and example file.
+- **Visible runtime process** - `sapi run` and `sapi watch` now start `sapi_server.exe` directly (instead of `cargo`), visible as-is in Task Manager.
+- **if / else / else if** - conditional branches with operators `==`, `!=`, `>`, `<`, `>=`, `<=`.
+- **SQL JSON errors** - query failures return `{"error":"sql_error","message":"..."}` and also log via `eprintln` on server side.
+- **Hierarchical guard in `auth`** - support for inline `guard { key, guard_op/op, roles }` block in JWT Auth config.
+- **Dynamic role priorities** - ranking key is configurable (`rank`, `weight`, `priority`, ...), compared via `guard_op` (`>=`, `>`, `==`, `<=`, `<`).
+- **Super-role** - support for `super: true` to bypass level checks.
+- **Short route syntax** - support for `guard "role"` in addition to `guard Auth "role"`.
+- **New multi-role guard tests** - dedicated scenario validating hierarchy, super-role behavior, short syntax, and 401/403 compatibility.
 
-## Corrections
+## Fixes
 
-- **Version CLI alignée en SemVer** — `sapi -V` affiche désormais `1.0.0` (baseline officielle).
-- **Plus de version hardcodée `0.1.0`** — la version OpenAPI (`info.version`) et la version du `Cargo.toml` généré (`sapi_server`) suivent maintenant automatiquement `env!("CARGO_PKG_VERSION")`.
-- **Politique de bump clarifiée** — les updates standards passent en patch (`1.0.1`, `1.0.2`, ...).
-- `sapi watch` ne créait pas de dossier `.sapi_watch/` visible à côté du fichier source.
-- Les variables non réassignées ne sont plus déclarées `let mut` dans le code généré.
-- Les structs multi-retour avec champs camelCase ne génèrent plus d'avertissement Rust.
-- Les résultats SQL (MariaDB/MySQL) décodent correctement les colonnes VARCHAR via `try_get_unchecked`.
-- `TRUNCATE TABLE` utilisé à la place de `DELETE FROM` dans les tests pour réinitialiser les AUTO_INCREMENT.
-
+- **CLI version aligned to SemVer** - `sapi -V` now reports `1.0.0` (official baseline).
+- **No more hardcoded `0.1.0`** - OpenAPI version (`info.version`) and generated `Cargo.toml` version (`sapi_server`) now automatically follow `env!("CARGO_PKG_VERSION")`.
+- **Version bump policy clarified** - standard updates use patch increments (`1.0.1`, `1.0.2`, ...).
+- `sapi watch` no longer creates visible `.sapi_watch/` folder next to source file.
+- Variables never reassigned are no longer emitted as `let mut` in generated code.
+- Multi-return structs with camelCase fields no longer trigger Rust warnings.
+- SQL results (MariaDB/MySQL) now decode VARCHAR columns correctly via `try_get_unchecked`.
+- Tests now use `TRUNCATE TABLE` instead of `DELETE FROM` to reset AUTO_INCREMENT.

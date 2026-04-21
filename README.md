@@ -1,77 +1,78 @@
-# Sapi Language
+﻿# Sapi Language
 
-> **Sapi** (Slyders API) est un langage de haut niveau conçu par **dSlyders** pour créer des APIs REST modernes en écrivant un minimum de code. Le compilateur génère automatiquement du Rust (Axum + Tokio) à partir de vos fichiers `.sapi`.
+> **Sapi** (Slyders API) is a high-level language created by **dSlyders** to build modern REST APIs with minimal code. The compiler generates Rust (Axum + Tokio) from `.sapi` files.
 
-Documentation en ligne: https://dslyders.github.io/sapi-lang/
-
----
-
-## Table des matières
-
-- [Pourquoi Sapi ?](#pourquoi-sapi-)
-- [Installation Windows](#installation-windows)
-- [Installation Linux](#installation-linux)
-- [Créer un projet](#créer-un-projet)
-- [Syntax de base](#syntax-de-base)
-- [Base de données](#base-de-données)
-- [Authentification JWT](#authentification-jwt)
-- [Extension VS Code](#extension-vs-code)
-- [Compiler et lancer](#compiler-et-lancer)
-- [Documentation et GitHub Pages](#documentation-et-github-pages)
-- [Gouvernance du projet](#gouvernance-du-projet)
-- [Structure du dépôt](#structure-du-dépôt)
+Online documentation: https://dslyders.github.io/sapi-lang/
 
 ---
 
-## Pourquoi Sapi ?
+## Table of Contents
 
-Écrire une API REST en Rust demande de gérer Axum, Tokio, Serde, les types JSON, les connexions DB, la gestion d'erreurs... Sapi abstrait tout ça dans un langage simple et expressif.
+- [Why Sapi?](#why-sapi)
+- [Windows Installation](#windows-installation)
+- [Linux Installation](#linux-installation)
+- [Create a Project](#create-a-project)
+- [Basic Syntax](#basic-syntax)
+- [Database](#database)
+- [JWT Authentication](#jwt-authentication)
+- [VS Code Extension](#vs-code-extension)
+- [Build and Run](#build-and-run)
+- [Documentation and GitHub Pages](#documentation-and-github-pages)
+- [Project Governance](#project-governance)
+- [Repository Structure](#repository-structure)
+
+---
+
+## Why Sapi?
+
+Building a Rust API directly means handling Axum, Tokio, Serde, JSON typing, DB connections, and error handling. Sapi abstracts this into a simple and expressive language.
 
 ```sapi
-service MonApi {
+service MyApi {
   port:    3000
   swagger: true
 }
 
-MonApi get "/hello" {
+MyApi get "/hello" {
   return "Hello, World!"
 }
 
-MonApi post "/echo" {
+MyApi post "/echo" {
   body json { string message }
   return { string echo = message }
 }
 ```
 
-Ce code génère une API Rust complète avec documentation Swagger — sans écrire une seule ligne de Rust.
+This generates a complete Rust API with Swagger documentation without writing Rust manually.
 
 ---
 
-## Installation Windows
+## Windows Installation
 
-### Prérequis
+### Requirements
 - Windows 10 / 11
-- [VS Code](https://code.visualstudio.com/) (recommandé)
+- [VS Code](https://code.visualstudio.com/) (recommended)
 
-### Étapes
+### Steps
 
-1. Télécharger la dernière version dans `V[n]/Install/windows/`
-2. Exécuter :
+1. Download the latest release from `V[n]/Install/windows/`
+2. Run:
 
 ```powershell
-sapi install sapi --path "chemin\vers\sapi.exe"
+sapi install sapi --path "path\to\sapi.exe"
 ```
 
-Si `sapi` n'est pas encore installé globalement, lancez le binaire téléchargé directement :
+If `sapi` is not installed globally yet, run the downloaded binary directly:
 
 ```powershell
 .\sapi.exe install sapi --path .\sapi.exe
 ```
 
-### Ce que l'installateur fait
-- Copie `sapi.exe` → `%LOCALAPPDATA%\sapi\bin\` et l'ajoute au **PATH** utilisateur
+### What the installer does
+- Copies `sapi.exe` to `%LOCALAPPDATA%\sapi\bin\`
+- Adds it to the user **PATH**
 
-### Vérifier l'installation (nouveau terminal)
+### Verify installation (new terminal)
 
 ```powershell
 sapi --version
@@ -79,49 +80,51 @@ sapi --version
 
 ---
 
-## Installation Linux
+## Linux Installation
 
-### Prérequis
-- Ubuntu 20.04+ / Debian / toute distro x86_64
+### Requirements
+- Ubuntu 20.04+ / Debian / any x86_64 distro
 
-### Étapes
+### Steps
 
-1. Télécharger la dernière version dans `V[n]/Install/linux/`
-2. Exécuter :
+1. Download the latest release from `V[n]/Install/linux/`
+2. Run:
 
 ```bash
-sapi install sapi --path /chemin/vers/sapi
+sapi install sapi --path /path/to/sapi
 ```
 
-Si `sapi` n'est pas encore installé globalement, lancez le binaire téléchargé directement :
+If `sapi` is not installed globally yet, run the downloaded binary directly:
 
 ```bash
 ./sapi install sapi --path ./sapi
 ```
 
-### Ce que l'installateur fait
-- Copie `sapi` → `~/.local/bin/sapi` et l'ajoute au **PATH** dans `.bashrc` / `.zshrc`
+### What the installer does
+- Copies `sapi` to `~/.local/bin/sapi`
+- Adds it to **PATH** in `.bashrc` / `.zshrc`
 
-### Vérifier l'installation
+### Verify installation
 
 ```bash
-source ~/.bashrc   # ou ouvrir un nouveau terminal
+source ~/.bashrc   # or open a new terminal
 sapi --version
 ```
 
 ---
 
-## Créer un projet
+## Create a Project
 
 ```bash
-sapi new mon-api
-cd mon-api
+sapi new my-api
+cd my-api
 ```
 
-Cela crée :
+This creates:
+
 ```
-mon-api/
-├── main.sapi          ← votre code
+my-api/
+├── main.sapi          ← your source
 └── .vscode/
     ├── settings.json
     └── sapi.code-snippets
@@ -129,12 +132,12 @@ mon-api/
 
 ---
 
-## Syntax de base
+## Basic Syntax
 
-### Service (serveur HTTP)
+### Service (HTTP server)
 
 ```sapi
-service MonApi {
+service MyApi {
   port:    3000
   swagger: true
   cors:    true
@@ -145,27 +148,27 @@ service MonApi {
 ### Routes
 
 ```sapi
-// GET — retourne une chaîne
-MonApi get "/ping" {
+// GET — returns text
+MyApi get "/ping" {
   return "pong"
 }
 
-// POST — lit un body JSON
-MonApi post "/user" {
+// POST — reads JSON body
+MyApi post "/user" {
   body json { string name, int age }
-  return 201: { string message = "Créé", string user = name }
+  return 201: { string message = "Created", string user = name }
 }
 
-// Route avec paramètre
-MonApi get "/user/{id}" {
+// Route parameter
+MyApi get "/user/{id}" {
   route { int id }
   return { int userId = id }
 }
 ```
 
-### Types disponibles
+### Available Types
 
-| Type | Exemple |
+| Type | Example |
 |------|---------|
 | `string` | `string name = "Alice"` |
 | `int` | `int age = 30` |
@@ -173,30 +176,30 @@ MonApi get "/user/{id}" {
 | `bool` | `bool active = true` |
 | `list:string` | `list:string tags = ["a", "b"]` |
 
-### Variables et interpolation
+### Variables and Interpolation
 
 ```sapi
-string nom = "Alice"
-string msg = "Bonjour, {nom}!"
+string name = "Alice"
+string msg = "Hello, {name}!"
 return msg
 ```
 
 ### If / else
 
 ```sapi
-MonApi get "/check/{value}" {
+MyApi get "/check/{value}" {
   route { int value }
   if value > 100 {
-    return "grand"
+    return "high"
   } else if value > 50 {
-    return "moyen"
+    return "medium"
   } else {
-    return "petit"
+    return "low"
   }
 }
 ```
 
-### Fonctions
+### Functions
 
 ```sapi
 fn double(int n) {
@@ -204,7 +207,7 @@ fn double(int n) {
   return result
 }
 
-MonApi get "/double/{n}" {
+MyApi get "/double/{n}" {
   route { int n }
   int result = double(n)
   return result
@@ -213,7 +216,7 @@ MonApi get "/double/{n}" {
 
 ---
 
-## Base de données
+## Database
 
 ```sapi
 database DB {
@@ -227,7 +230,7 @@ database DB {
 
 sql getUser = `SELECT id, name FROM users WHERE id = {id}` : { int:id, string:name } use DB
 
-MonApi get "/user/{id}" {
+MyApi get "/user/{id}" {
   route { int id }
   await User row = getUser({ id: id }).one()
   return { int id = row.id, string name = row.name }
@@ -236,7 +239,7 @@ MonApi get "/user/{id}" {
 
 ---
 
-## Authentification JWT
+## JWT Authentication
 
 ```sapi
 auth Auth {
@@ -246,31 +249,31 @@ auth Auth {
   claims:    { int userId, string role }
 }
 
-// Route protégée
-MonApi get "/profile" {
+MyApi get "/profile" {
   guard Auth
-  return "Accès autorisé"
+  return "Authorized"
 }
 
-// Route avec rôle requis
-MonApi delete "/admin/user/{id}" {
+MyApi delete "/admin/user/{id}" {
   guard Auth "admin"
   route { int id }
-  return { string message = "Supprimé" }
+  return { string message = "Deleted" }
 }
 ```
 
 ---
 
-## Extension VS Code
+## VS Code Extension
 
-L'extension **sapi-lang** apporte :
-- Coloration syntaxique complète (mots-clés, types, SQL, routes, interpolations...)
-- 38 snippets d'autocomplétion (`service`, `get`, `post`, `sql`, `await`, `guard`, `if`, `for`...)
-- Commentaires `//` et `///`
-- Auto-fermeture des accolades, crochets, parenthèses
+The **sapi-lang** extension provides:
+- Full syntax highlighting (keywords, types, SQL, routes, interpolation)
+- 38 completion snippets (`service`, `get`, `post`, `sql`, `await`, `guard`, `if`, `for`, ...)
+- `//` and `///` comments
+- Auto-closing braces, brackets, and parentheses
 
-Les fichiers se trouvent dans `Editor/` — copier dans votre projet et recharger VS Code :
+Files are in `Editor/`.
+
+Reload VS Code:
 
 ```
 Ctrl+Shift+P  →  Developer: Reload Window
@@ -278,101 +281,101 @@ Ctrl+Shift+P  →  Developer: Reload Window
 
 ---
 
-## Compiler et lancer
+## Build and Run
 
-> Important (dev local): `sapi build`, `sapi run` et `sapi watch` compilent un projet Rust genere. Il faut donc Rust/Cargo installe sur la machine de developpement.
+> Important (local dev): `sapi build`, `sapi run`, and `sapi watch` compile generated Rust code locally. Rust/Cargo is required on development machines.
 >
-> Installation rapide: https://rustup.rs
+> Quick install: https://rustup.rs
 >
-> En production, seul le binaire final `sapi_server` est necessaire (pas Rust, pas Sapi).
+> In production, only the final `sapi_server` binary is required (not Rust, not Sapi).
 
 ```bash
-# Créer un nouveau projet
-sapi new mon-api
+# Create a project
+sapi new my-api
 
-# Compiler un fichier .sapi (génère le projet Rust dans ./out/)
+# Build .sapi file
 sapi build main.sapi
 
-# Compiler vers un dossier spécifique
-sapi build main.sapi mon-projet
+# Build to a specific folder
+sapi build main.sapi my-output
 
-# Lancer directement (compile + exécute)
+# Run directly (build + run)
 sapi run main.sapi
 
-# Mode watch — recompile automatiquement à chaque sauvegarde (dev)
+# Watch mode (auto rebuild/restart)
 sapi watch main.sapi
 
-# Installer automatiquement Rust/Cargo + Build Tools C++ + sqlx-cli (Windows)
+# Install Rust/Cargo + C++ Build Tools + sqlx-cli (Windows)
 sapi install rust
 
-# Tout installer en une commande (CLI + Rust/C++), optionnellement depuis un binaire local
+# Install everything in one command (CLI + Rust/C++)
 sapi install all
-sapi install all --path "chemin\\vers\\sapi.exe"
+sapi install all --path "path\\to\\sapi.exe"
 
-# Idem + prérequis cross-compilation Linux (zig, cargo-zigbuild, musl)
+# Add Linux cross-build prerequisites (zig, cargo-zigbuild, musl)
 sapi install rust --linux
 sapi install all --linux
 
-# Générer la documentation HTML (dans ./docs/)
+# Generate HTML docs in ./docs
 sapi doc main.sapi --html
 
-# Générer la documentation dans un dossier spécifique
+# Generate docs into a custom folder
 sapi doc main.sapi --html --output api-docs
 
-# Créer une migration SQL (fichiers .up.sql + .down.sql)
+# Create migration files (.up.sql + .down.sql)
 sapi migrate add -r init_schema
 
-# Appliquer les migrations
+# Run migrations
 sapi migrate run
 
-# Afficher l'état des migrations
+# Show migration status
 sapi migrate info
 
-# Revert de la dernière migration
+# Revert last migration
 sapi migrate revert
 
-# Installer l'extension VS Code Sapi (depuis le binaire CLI)
+# Install VS Code extension from CLI assets
 sapi plugin install
 
-# Installer les instructions + skills Copilot pour un projet Sapi
+# Install Copilot instructions + skills
 sapi plugin install-ai
 
-# Installer dans un dossier cible et remplacer les fichiers existants
-sapi plugin install-ai --dir mon-api --force
+# Install AI files into target dir and overwrite existing
+sapi plugin install-ai --dir my-api --force
 
-# Réinstaller proprement l'extension
+# Reinstall extension cleanly
 sapi plugin reinstall
 
-# Diagnostiquer l'installation plugin
+# Diagnose extension install
 sapi plugin doctor
 
-# Diagnostiquer + corriger automatiquement
+# Diagnose + auto-fix
 sapi plugin doctor --fix
 ```
 
 ---
 
-## Documentation et GitHub Pages
+## Documentation and GitHub Pages
 
-Source de référence de la documentation langage:
+Language documentation source:
 
 - `C:\SAPI\LANGUAGE.html`
 
-Publication dans ce dépôt:
+Published in this repository:
 
-- `V[n]/Documentation/sapi.html` pour la release active
-- `docs/index.html` pour GitHub Pages
+- `V[n]/Documentation/sapi.html` for active release docs
+- `docs/index.html` for GitHub Pages
 
-URL GitHub Pages attendue:
+Expected GitHub Pages URL:
 
 - https://dslyders.github.io/sapi-lang/
 
-Workflow automatique:
+Automatic workflow:
 
 - `.github/workflows/deploy-docs-pages.yml`
-- Déclenché à chaque push sur `main` qui modifie `docs/**`
+- Triggered on every push to `main` that changes `docs/**`
 
-Mise à jour manuelle rapide (Windows PowerShell):
+Quick manual update (Windows PowerShell):
 
 ```powershell
 $distRoot = "C:\SAPI\Distribution"
@@ -387,41 +390,41 @@ Copy-Item -Force "C:\SAPI\LANGUAGE.html" "C:\SAPI\Distribution\docs\index.html"
 
 ---
 
-## Gouvernance du projet
+## Project Governance
 
-- Licence: `LICENSE` (MIT)
-- Sécurité: `SECURITY.md`
-- Contribution: `CONTRIBUTING.md`
-- Conduite: `CODE_OF_CONDUCT.md`
-- Historique global: `CHANGELOG.md`
+- License: `LICENSE` (MIT)
+- Security: `SECURITY.md`
+- Contributing: `CONTRIBUTING.md`
+- Code of Conduct: `CODE_OF_CONDUCT.md`
+- Global history: `CHANGELOG.md`
 
 ---
 
-## Structure du dépôt
+## Repository Structure
 
 ```
 Distribution/
-├── README.md            ← Ce fichier
-├── Editor/              ← Support VS Code (optionnel)
-│   ├── Plugin/          ← Extension de syntaxe + coloration
+├── README.md            ← this file
+├── Editor/              ← optional VS Code support
+│   ├── Plugin/          ← syntax/color extension
 │   └── vscode/          ← settings.json + snippets
-└── V[n]/                ← Versions de release
-    ├── CHANGE.md        ← Nouveautés de cette version
+└── V[n]/                ← release versions
+    ├── CHANGE.md        ← changelog for this version
     ├── Documentation/
-    │   └── sapi.html    ← Référence complète du langage
+    │   └── sapi.html    ← full language reference
     └── Install/
         ├── windows/
-      │   └── sapi.exe
+        │   └── sapi.exe
         └── linux/
             └── sapi
 ```
 
 ---
 
-## Licence
+## License
 
-  MIT. Voir `LICENSE`.
+MIT. See `LICENSE`.
 
-## Support VS Code (optionnel)
+## VS Code Support (optional)
 
-Copier le dossier `Editor/Plugin/sapi-lang` dans `~/.vscode/extensions/` pour la coloration syntaxique et les snippets.
+Copy `Editor/Plugin/sapi-lang` into `~/.vscode/extensions/` for syntax highlighting and snippets.
