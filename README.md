@@ -56,7 +56,16 @@ This generates a complete Rust API with Swagger documentation without writing Ru
 ### Steps
 
 1. Download the latest release from `V[n]/Install/windows/`
-2. Run:
+2. Run the installer: `sapi-setup-<version>.exe`
+3. Open a new terminal and verify:
+
+```powershell
+sapi --version
+```
+
+### Portable/manual fallback
+
+If you only have `sapi.exe`, run:
 
 ```powershell
 sapi install sapi --path "path\to\sapi.exe"
@@ -69,8 +78,8 @@ If `sapi` is not installed globally yet, run the downloaded binary directly:
 ```
 
 ### What the installer does
-- Copies `sapi.exe` to `%LOCALAPPDATA%\sapi\bin\`
-- Adds it to the user **PATH**
+- Installs `sapi.exe` in `%LOCALAPPDATA%\Sapi\bin\`
+- Adds `%LOCALAPPDATA%\Sapi\bin\` to the user **PATH**
 
 ### Verify installation (new terminal)
 
