@@ -1,2 +1,8 @@
 Install/
 .build/
+!V*/Install/
+!V*/Install/windows/
+!V*/Install/linux/
+!V*/Install/windows/sapi.exe
+!V*/Install/windows/sapi-install.exe
+!V*/Install/linux/sapi
