@@ -18,6 +18,7 @@ Documentation en ligne: https://dslyders.github.io/sapi-lang/
 - [Extension VS Code](#extension-vs-code)
 - [Compiler et lancer](#compiler-et-lancer)
 - [Documentation et GitHub Pages](#documentation-et-github-pages)
+- [Gouvernance du projet](#gouvernance-du-projet)
 - [Structure du dépôt](#structure-du-dépôt)
 
 ---
@@ -386,6 +387,16 @@ Copy-Item -Force "C:\SAPI\LANGUAGE.html" "C:\SAPI\Distribution\docs\index.html"
 
 ---
 
+## Gouvernance du projet
+
+- Licence: `LICENSE` (MIT)
+- Sécurité: `SECURITY.md`
+- Contribution: `CONTRIBUTING.md`
+- Conduite: `CODE_OF_CONDUCT.md`
+- Historique global: `CHANGELOG.md`
+
+---
+
 ## Structure du dépôt
 
 ```
@@ -400,10 +411,8 @@ Distribution/
     │   └── sapi.html    ← Référence complète du langage
     └── Install/
         ├── windows/
-        │   ├── sapi.exe
-        │   └── sapi.exe
+      │   └── sapi.exe
         └── linux/
-            ├── sapi
             └── sapi
 ```
 
@@ -411,7 +420,7 @@ Distribution/
 
 ## Licence
 
-© Slyders — Tous droits réservés.
+  MIT. Voir `LICENSE`.
 
 ## Support VS Code (optionnel)
 
