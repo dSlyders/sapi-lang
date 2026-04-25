@@ -2,16 +2,13 @@ name: Publish Sapi Release
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
     paths:
-      - "V*/Install/**"
-      - "V*/Documentation/sapi.html"
-      - "docs/index.html"
+      - 'V*/Install/**'
+      - 'V*/Documentation/sapi.html'
+      - 'docs/index.html'
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Release version (SemVer, e.g. 1.3.5). If empty, parsed from latest commit message."
-        required: false
 
 permissions:
   contents: write
@@ -19,57 +16,37 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Resolve release metadata and latest V folder
+      - name: Resolve version and collect assets
         id: meta
         shell: bash
         run: |
           set -euo pipefail
 
-          # Resolve highest Distribution version folder (V1, V2, ...)
           latest_v="$(ls -1d V*/ 2>/dev/null | sed 's#/##' | grep -E '^V[0-9]+$' | sort -V | tail -n1 || true)"
-          if [ -z "${latest_v}" ]; then
-            echo "No V[n] folder found in repository root."
+          if [ -z "$latest_v" ]; then
+            echo "No V[n] folder found."
             exit 1
           fi
 
-          version_input="${{ github.event.inputs.version || '' }}"
-          if [ -n "${version_input}" ]; then
-            version="${version_input#v}"
-          else
-            msg="$(git log -1 --pretty=%B)"
-            version="$(printf '%s' "$msg" | sed -nE 's/.*\bv([0-9]+\.[0-9]+\.[0-9]+)\b.*/\1/p' | head -n1)"
-          fi
-
-          if [ -z "${version}" ]; then
-            echo "Unable to resolve release version from commit message."
-            echo "Use a commit message containing vX.Y.Z or run workflow_dispatch with 'version' input."
+          msg="$(git log -1 --pretty=%B)"
+          version="$(printf '%s' "$msg" | sed -nE 's/.*\bv([0-9]+\.[0-9]+\.[0-9]+)\b.*/\1/p' | head -n1)"
+          if [ -z "$version" ]; then
+            echo "Cannot resolve version from commit message; expected vX.Y.Z."
             exit 1
           fi
 
           if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Resolved version is not valid SemVer: $version"
+            echo "Invalid SemVer: $version"
             exit 1
           fi
 
-          echo "latest_v=${latest_v}" >> "$GITHUB_OUTPUT"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
-
-      - name: Collect release assets
-        id: assets
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          latest_v="${{ steps.meta.outputs.latest_v }}"
-          asset_dir=".release-assets"
+          asset_dir='.release-assets'
           rm -rf "$asset_dir"
           mkdir -p "$asset_dir"
 
@@ -78,7 +55,6 @@ jobs:
             dst="$2"
             if [ -f "$src" ]; then
               cp "$src" "$asset_dir/$dst"
-              echo "$asset_dir/$dst" >> "$asset_dir/files.txt"
             fi
           }
 
@@ -90,30 +66,29 @@ jobs:
           add_asset "$latest_v/Install/macos-arm64/sapi-install.sh" "sapi-install-macos-arm64.sh"
           add_asset "$latest_v/Documentation/sapi.html" "sapi.html"
 
-          if [ ! -f "$asset_dir/files.txt" ]; then
-            echo "No release assets found in $latest_v."
-            exit 1
-          fi
-
-          count="$(wc -l < "$asset_dir/files.txt" | tr -d ' ')"
-          if [ "$count" -eq 0 ]; then
+          if [ -z "$(ls -A "$asset_dir")" ]; then
             echo "No release assets collected."
             exit 1
           fi
 
-          echo "asset_dir=$asset_dir" >> "$GITHUB_OUTPUT"
+          {
+            echo "latest_v=$latest_v"
+            echo "version=$version"
+            echo "tag=v$version"
+            echo "asset_dir=$asset_dir"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Create or update GitHub release
+      - name: Create or update release
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
 
-          tag="${{ steps.meta.outputs.tag }}"
-          version="${{ steps.meta.outputs.version }}"
-          latest_v="${{ steps.meta.outputs.latest_v }}"
-          asset_dir="${{ steps.assets.outputs.asset_dir }}"
+          tag='${{ steps.meta.outputs.tag }}'
+          version='${{ steps.meta.outputs.version }}'
+          latest_v='${{ steps.meta.outputs.latest_v }}'
+          asset_dir='${{ steps.meta.outputs.asset_dir }}'
 
           notes_file="$asset_dir/notes.md"
           cat > "$notes_file" <<EOF
@@ -126,7 +101,13 @@ Included assets are uploaded from ${latest_v}:
 - sapi.html documentation
 EOF
 
-          mapfile -t files < "$asset_dir/files.txt"
+          shopt -s nullglob
+          files=("$asset_dir"/*)
+          shopt -u nullglob
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No files to upload."
+            exit 1
+          fi
 
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" "${files[@]}" --clobber
