@@ -39,7 +39,7 @@ jobs:
             exit 1
           fi
 
-          version_input="${{ inputs.version }}"
+          version_input="${{ github.event.inputs.version || '' }}"
           if [ -n "${version_input}" ]; then
             version="${version_input#v}"
           else
