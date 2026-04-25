@@ -92,26 +92,32 @@ sapi --version
 ## Linux Installation
 
 ### Requirements
-- Ubuntu 20.04+ / Debian / any x86_64 distro
+- Ubuntu 20.04+ / Debian / any x86_64 or arm64 distro
 
 ### Steps
 
-1. Download the latest release from `V[n]/Install/linux/`
-2. Run:
+1. Download the latest release folder matching your architecture:
+  - x86_64: `V[n]/Install/linux/`
+  - arm64/aarch64: `V[n]/Install/arm/`
+2. Run the Linux installer script:
 
 ```bash
-sapi install sapi --path /path/to/sapi
+sh sapi-install.sh
 ```
 
-If `sapi` is not installed globally yet, run the downloaded binary directly:
+3. Verify:
 
 ```bash
-./sapi install sapi --path ./sapi
+sapi --version
 ```
 
 ### What the installer does
 - Copies `sapi` to `~/.local/bin/sapi`
-- Adds it to **PATH** in `.bashrc` / `.zshrc`
+- Runs `sapi install prerequisites` automatically (Rust toolchain + required build targets/tools)
+- Prints the export line to add `~/.local/bin` to **PATH** if needed
+
+Optional:
+- Set `SAPI_SKIP_PREREQS=1` before running installer to skip prerequisites install.
 
 ### Verify installation
 

@@ -117,9 +117,12 @@
 
   <section id="install">
     <h2>2. Installation</h2>
+
     <h3>Windows installer (recommended)</h3>
-    <p>Download the installer directly from GitHub:</p>
+    <p>Download the installer directly from GitHub&nbsp;:</p>
     <p><a href="https://github.com/dSlyders/sapi-lang/releases/latest/download/sapi-install.exe">https://github.com/dSlyders/sapi-lang/releases/latest/download/sapi-install.exe</a></p>
+    <p style="color:#d29922"><b>Note&nbsp;:</b> Si le lien ne fonctionne pas, vérifiez que la dernière release contient bien le fichier <code>sapi-install.exe</code> dans les assets.<br>
+    Vous pouvez aussi télécharger manuellement depuis&nbsp;: <a href="https://github.com/dSlyders/sapi-lang/releases/latest">la page de la dernière release</a>.</p>
     <p>After installation, open a new terminal and verify:</p>
     <pre><code>sapi -V</code></pre>
 
@@ -128,6 +131,12 @@
       <li>Latest releases page: <a href="https://github.com/dSlyders/sapi-lang/releases/latest">https://github.com/dSlyders/sapi-lang/releases/latest</a></li>
       <li>All releases: <a href="https://github.com/dSlyders/sapi-lang/releases">https://github.com/dSlyders/sapi-lang/releases</a></li>
     </ul>
+
+    <h3>Linux installer</h3>
+    <p>In the Linux release folder, use <code>sapi-install.sh</code> (placed next to the <code>sapi</code> binary):</p>
+    <pre><code>sh sapi-install.sh
+sapi -V</code></pre>
+    <p>The installer copies <code>sapi</code> to <code>~/.local/bin</code> and prints the PATH export line if required.</p>
 
     <h3>Developer prerequisites</h3>
     <p>For local compilation with <code>sapi build</code>, <code>sapi run</code> or <code>sapi watch</code>, install prerequisites:</p>
