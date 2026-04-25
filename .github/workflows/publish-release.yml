@@ -14,8 +14,15 @@ permissions:
   contents: write
 
 jobs:
-  sanity:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Sanity
-        run: echo "workflow with path filters is valid"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/publish_release.sh
