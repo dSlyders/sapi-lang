@@ -1,6 +1,14 @@
 #!/usr/bin/env sh
 set -eu
 
+OS_NAME=$(uname -s 2>/dev/null || echo unknown)
+if [ "$OS_NAME" != "Linux" ]; then
+  echo "Error: this installer targets Linux only."
+  echo "Detected OS: $OS_NAME"
+  echo "Use the Windows installer on Windows, or a dedicated macOS build on macOS."
+  exit 1
+fi
+
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 BIN_SRC="$SCRIPT_DIR/sapi"
 
