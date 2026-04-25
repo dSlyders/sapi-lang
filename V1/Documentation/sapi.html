@@ -112,7 +112,7 @@
   <section id="intro">
     <h2>1. Introduction</h2>
     <p>Sapi is a high-level language focused on API development. A <code>.sapi</code> file defines service configuration, routes, SQL queries, validation, auth, and response structures.</p>
-    <p>The Sapi compiler generates a production-ready Rust server and can build binaries for native OS execution, Linux deployment, or macOS Apple Silicon.</p>
+    <p>The Sapi compiler generates a production-ready Rust server and can build binaries for native OS execution or Linux deployment.</p>
   </section>
 
   <section id="install">
@@ -138,12 +138,6 @@
 sapi -V</code></pre>
     <p>The installer copies <code>sapi</code> to <code>~/.local/bin</code> and prints the PATH export line if required.</p>
 
-    <h3>macOS Apple Silicon installer</h3>
-    <p>For macOS ARM64 (M1/M2/M3), download and run the dedicated installer:</p>
-    <pre><code>sh sapi-install-macos-arm64.sh
-  sapi -V</code></pre>
-    <p>Use the macOS assets from the release page: <code>sapi-macos-arm64</code> and <code>sapi-install-macos-arm64.sh</code>.</p>
-
     <h3>Developer prerequisites</h3>
     <p>For local compilation with <code>sapi build</code>, <code>sapi run</code> or <code>sapi watch</code>, install prerequisites:</p>
     <pre><code>sapi install prerequisites</code></pre>
@@ -167,7 +161,6 @@ sapi run</code></pre>
       <tr><td><code>sapi build [file.sapi]</code></td><td>Compile a release server binary.</td></tr>
       <tr><td><code>sapi build --windows</code></td><td>Build a Windows binary (native on Windows).</td></tr>
       <tr><td><code>sapi build --linux</code></td><td>Build a Linux x64 musl binary.</td></tr>
-      <tr><td><code>sapi build --macos</code></td><td>Build a macOS Apple Silicon binary.</td></tr>
       <tr><td><code>sapi run [file.sapi]</code></td><td>Build and run once.</td></tr>
       <tr><td><code>sapi watch [file.sapi]</code></td><td>Watch files and auto-rebuild/restart.</td></tr>
       <tr><td><code>sapi doc [file.sapi] --html</code></td><td>Generate documentation.</td></tr>
@@ -320,8 +313,7 @@ MyApi delete "/admin/users/{id}" {
 
   # Explicit target build
   sapi build --windows
-  sapi build --linux
-  sapi build --macos</code></pre>
+  sapi build --linux</code></pre>
     <p>The output binary is standalone for server deployment.</p>
 
     <h3>Nginx reverse proxy example</h3>

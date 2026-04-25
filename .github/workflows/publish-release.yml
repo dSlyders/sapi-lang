@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'V*/Install/**'
+      - 'V*/Install/windows/**'
+      - 'V*/Install/linux/**'
       - 'V*/Documentation/sapi.html'
       - 'docs/index.html'
   workflow_dispatch:

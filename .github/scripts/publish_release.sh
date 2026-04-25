@@ -52,8 +52,6 @@ add_asset "$latest_v/Install/windows/sapi.exe" "sapi.exe"
 add_asset "$latest_v/Install/windows/sapi-install.exe" "sapi-install.exe"
 add_asset "$latest_v/Install/linux/sapi" "sapi-linux-x64"
 add_asset "$latest_v/Install/linux/sapi-install.sh" "sapi-install-linux-x64.sh"
-add_asset "$latest_v/Install/macos-arm64/sapi" "sapi-macos-arm64"
-add_asset "$latest_v/Install/macos-arm64/sapi-install.sh" "sapi-install-macos-arm64.sh"
 add_asset "$latest_v/Documentation/sapi.html" "sapi.html"
 
 if [[ -z "$(ls -A "$asset_dir")" ]]; then
@@ -68,7 +66,6 @@ Automated release for Sapi v${version}.
 Included assets are uploaded from ${latest_v}:
 - Windows CLI and installer
 - Linux x64 binary and installer
-- macOS Apple Silicon binary and installer
 - sapi.html documentation
 EOF
 

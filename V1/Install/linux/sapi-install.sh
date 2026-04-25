@@ -5,7 +5,7 @@ OS_NAME=$(uname -s 2>/dev/null || echo unknown)
 if [ "$OS_NAME" != "Linux" ]; then
   echo "Error: this installer targets Linux only."
   echo "Detected OS: $OS_NAME"
-  echo "Use the Windows installer on Windows, or a dedicated macOS build on macOS."
+  echo "Use the Windows installer on Windows."
   exit 1
 fi
 
