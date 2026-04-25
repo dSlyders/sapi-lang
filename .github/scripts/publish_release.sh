@@ -7,10 +7,26 @@ if [[ -z "$latest_v" ]]; then
   exit 1
 fi
 
-msg="$(git log -1 --pretty=%B)"
-version="$(printf '%s' "$msg" | sed -nE 's/.*\bv([0-9]+\.[0-9]+\.[0-9]+)\b.*/\1/p' | head -n1)"
+version=""
+if [[ -n "${RELEASE_VERSION:-}" ]]; then
+  version="${RELEASE_VERSION#v}"
+fi
+
 if [[ -z "$version" ]]; then
-  echo "Cannot resolve release version from commit message. Expected pattern: vX.Y.Z"
+  msg="$(git log -1 --pretty=%B)"
+  version="$(printf '%s' "$msg" | sed -nE 's/.*\bv([0-9]+\.[0-9]+\.[0-9]+)\b.*/\1/p' | head -n1)"
+fi
+
+if [[ -z "$version" ]]; then
+  latest_tag="$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || true)"
+  if [[ -n "$latest_tag" ]]; then
+    version="${latest_tag#v}"
+    echo "No SemVer found in commit message; falling back to latest release tag: $latest_tag"
+  fi
+fi
+
+if [[ -z "$version" ]]; then
+  echo "Cannot resolve release version. Provide workflow_dispatch input 'version' or use a commit message containing vX.Y.Z"
   exit 1
 fi
 

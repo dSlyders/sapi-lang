@@ -9,6 +9,10 @@ on:
       - 'V*/Documentation/sapi.html'
       - 'docs/index.html'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (SemVer, e.g. 1.3.6). Optional.'
+        required: false
 
 permissions:
   contents: write
@@ -25,4 +29,5 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
         run: bash .github/scripts/publish_release.sh
