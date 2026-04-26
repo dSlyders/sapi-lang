@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'V*/Install/windows/**'
+      - 'V*/Install/plugin/**'
       - 'V*/Install/linux/**'
       - 'V*/Documentation/sapi.html'
       - 'docs/index.html'

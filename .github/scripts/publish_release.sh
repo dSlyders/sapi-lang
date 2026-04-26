@@ -50,6 +50,7 @@ add_asset() {
 
 add_asset "$latest_v/Install/windows/sapi.exe" "sapi.exe"
 add_asset "$latest_v/Install/windows/sapi-install.exe" "sapi-install.exe"
+add_asset "$latest_v/Install/plugin/sapi-lang.vsix" "sapi-lang.vsix"
 add_asset "$latest_v/Install/linux/sapi" "sapi-linux-x64"
 add_asset "$latest_v/Install/linux/sapi-install.sh" "sapi-install-linux-x64.sh"
 add_asset "$latest_v/Documentation/sapi.html" "sapi.html"
@@ -65,6 +66,7 @@ Automated release for Sapi v${version}.
 
 Included assets are uploaded from ${latest_v}:
 - Windows CLI and installer
+- VS Code plugin (sapi-lang.vsix)
 - Linux x64 binary and installer
 - sapi.html documentation
 EOF
