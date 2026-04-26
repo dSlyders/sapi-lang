@@ -248,6 +248,7 @@ MyApi get "/users/{id}" {
 }</code></pre>
     <p><strong>SQL await syntax:</strong> Use <code>await findUser(...).one() as row</code> (or <code>.many() as rows</code>).</p>
     <p><strong>Empty result with <code>.one()</code>:</strong> if no row is found, the request returns a SQL error response (HTTP 500). Use query design or route logic accordingly.</p>
+    <p><strong>Reusable SQL:</strong> <code>sql ...</code> declarations can be placed at file root (outside routes) and imported from other <code>.sapi</code> files. This lets you centralize queries and reuse them across multiple routes.</p>
     <h3>MySQL practical examples</h3>
     <pre><code>database MainDB {
   url: env("DATABASE_URL")
