@@ -243,9 +243,11 @@ sql findUser = `SELECT id, name FROM users WHERE id = {id}` : {
 
 MyApi get "/users/{id}" {
   route { int id }
-  await FindUser row = findUser({ id: id }).one()
+  await findUser({ id: id }).one() as row
   return { int id = row.id, string name = row.name }
 }</code></pre>
+    <p><strong>SQL await syntax:</strong> Use <code>await findUser(...).one() as row</code> (or <code>.many() as rows</code>) only. Legacy forms like <code>row = await ...</code> and <code>await Row row = ...</code> are not supported.</p>
+    <p><strong>Empty result with <code>.one()</code>:</strong> if no row is found, the request returns a SQL error response (HTTP 500). Use query design or route logic accordingly.</p>
     <div class="callout ok">
       <strong>Supported URL schemes:</strong> <code>postgres://...</code>, <code>mysql://...</code>, <code>mariadb://...</code>, <code>sqlite:...</code>
     </div>
@@ -379,7 +381,7 @@ MyApi get "/ping" {
 
 MyApi get "/users/{id}" {
   route { int id }
-  await FindUser user = findUser({ id: id }).one()
+  user = await findUser({ id: id }).one()
   return {
     int id = user.id
     string name = user.name
