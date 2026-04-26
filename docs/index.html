@@ -246,8 +246,97 @@ MyApi get "/users/{id}" {
   await findUser({ id: id }).one() as row
   return { int id = row.id, string name = row.name }
 }</code></pre>
-    <p><strong>SQL await syntax:</strong> Use <code>await findUser(...).one() as row</code> (or <code>.many() as rows</code>) only. Legacy forms like <code>row = await ...</code> and <code>await Row row = ...</code> are not supported.</p>
+    <p><strong>SQL await syntax:</strong> Use <code>await findUser(...).one() as row</code> (or <code>.many() as rows</code>).</p>
     <p><strong>Empty result with <code>.one()</code>:</strong> if no row is found, the request returns a SQL error response (HTTP 500). Use query design or route logic accordingly.</p>
+    <h3>MySQL practical examples</h3>
+    <pre><code>database MainDB {
+  url: env("DATABASE_URL")
+}
+
+sql createUser = `
+INSERT INTO users (name, email, role)
+VALUES ({name}, {email}, {role})
+` use MainDB
+
+sql updateUserRole = `
+UPDATE users
+SET role = {role}
+WHERE id = {id}
+` use MainDB
+
+sql deleteUser = `
+DELETE FROM users
+WHERE id = {id}
+` use MainDB
+
+sql listUsersByRole = `
+SELECT id, name, email, role
+FROM users
+WHERE role = {role}
+ORDER BY id DESC
+LIMIT {limit}
+` : {
+  int id
+  string name
+  string email
+  string role
+} use MainDB
+
+sql userOrderSummary = `
+SELECT u.id, u.name, COUNT(o.id) AS orderCount, COALESCE(SUM(o.total), 0) AS totalSpent
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+WHERE u.role = {role}
+GROUP BY u.id, u.name
+HAVING COUNT(o.id) >= {minOrders}
+ORDER BY totalSpent DESC
+LIMIT {limit}
+` : {
+  int id
+  string name
+  int orderCount
+  float totalSpent
+} use MainDB
+
+MyApi post "/users" {
+  body json {
+    field string name { required.onError("name required") }
+    field string email { required.onError("email required") }
+    field string role { required.onError("role required") }
+  }
+  await createUser({ name: name, email: email, role: role }).run() as created
+  return { string status = "created" }
+}
+
+MyApi patch "/users/{id}/role" {
+  route { int id }
+  body json {
+    field string role { required.onError("role required") }
+  }
+  await updateUserRole({ id: id, role: role }).run() as updated
+  return { string status = "updated" }
+}
+
+MyApi delete "/users/{id}" {
+  route { int id }
+  await deleteUser({ id: id }).run() as deleted
+  return { string status = "deleted" }
+}
+
+MyApi get "/users/role/{role}" {
+  route { string role }
+  int limit = 20
+  await listUsersByRole({ role: role, limit: limit }).many() as rows
+  return rows
+}
+
+MyApi get "/analytics/orders-by-role/{role}" {
+  route { string role }
+  int minOrders = 1
+  int limit = 50
+  await userOrderSummary({ role: role, minOrders: minOrders, limit: limit }).many() as report
+  return report
+}</code></pre>
     <div class="callout ok">
       <strong>Supported URL schemes:</strong> <code>postgres://...</code>, <code>mysql://...</code>, <code>mariadb://...</code>, <code>sqlite:...</code>
     </div>
@@ -381,7 +470,7 @@ MyApi get "/ping" {
 
 MyApi get "/users/{id}" {
   route { int id }
-  user = await findUser({ id: id }).one()
+  await findUser({ id: id }).one() as user
   return {
     int id = user.id
     string name = user.name
