@@ -442,4 +442,4 @@ MIT. See `LICENSE`.
 
 ## VS Code Support (optional)
 
-Copy `Editor/Plugin/sapi-lang` into `~/.vscode/extensions/` for syntax highlighting and snippets.
+Use the VSIX package from `V[n]/Install/plugin/sapi-lang.vsix`, then install it in VS Code/Cursor/VSCodium.
